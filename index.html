@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickett Dynamics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0f1117;--ink-lt:#1e2330;
+  --accent:#3a6b8a;--accent-lt:#e8f2f8;
+  --sand:#d9c9a8;--cream:#f5f1ea;--muted:#6b7c88;
+  --white:#ffffff;
+  --sh-s:0 2px 8px rgba(15,17,23,.08);--sh-m:0 4px 24px rgba(15,17,23,.14);--sh-l:0 10px 48px rgba(15,17,23,.22);
+  --r-m:12px;--r-l:16px;--r-xl:24px;
+  --font:Inter,system-ui,sans-serif;--font-d:'Playfair Display',Georgia,serif;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font);background:var(--ink);color:#fff;line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+.container{max-width:1100px;margin:0 auto;padding:0 32px}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:80px 32px 64px;text-align:center;
+  background:radial-gradient(ellipse 120% 80% at 50% 0%, #1a2a3a 0%, var(--ink) 70%);
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(58,107,138,.12) 0%, transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(45,74,62,.1) 0%, transparent 50%);
+  pointer-events:none;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  padding:6px 16px;border-radius:30px;font-size:.78rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);
+  margin-bottom:28px;
+}
+.hero h1{
+  font-family:var(--font-d);font-size:clamp(3.2rem,9vw,7rem);
+  font-weight:900;letter-spacing:-.03em;line-height:1;
+  margin-bottom:22px;
+}
+.hero h1 span{
+  background:linear-gradient(135deg,#fff 30%,rgba(58,107,138,.9));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  font-size:clamp(1rem,2vw,1.18rem);color:rgba(255,255,255,.58);
+  max-width:540px;line-height:1.75;margin:0 auto 52px;
+}
+.hero-scroll{
+  position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+  color:rgba(255,255,255,.28);font-size:.7rem;letter-spacing:.12em;
+  text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px;
+  animation:bob 2.4s infinite;
+}
+@keyframes bob{0%,100%{transform:translateX(-50%)translateY(0)}50%{transform:translateX(-50%)translateY(8px)}}
+
+/* ── VENTURES GRID ── */
+.ventures{padding:96px 0 112px;background:var(--ink)}
+.sec-eyebrow{
+  font-size:.76rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:12px;
+}
+.sec-heading{
+  font-family:var(--font-d);font-size:clamp(1.8rem,4vw,2.8rem);
+  font-weight:900;color:#fff;line-height:1.1;margin-bottom:10px;
+}
+.sec-sub{font-size:.98rem;color:rgba(255,255,255,.48);line-height:1.75;max-width:480px;margin-bottom:56px}
+
+.v-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+
+.v-card{
+  background:var(--ink-lt);border:1px solid rgba(255,255,255,.07);
+  border-radius:var(--r-xl);padding:40px 36px 36px;
+  position:relative;overflow:hidden;
+  transition:transform .3s,box-shadow .3s,border-color .3s;
+  display:flex;flex-direction:column;
+}
+.v-card::before{
+  content:'';position:absolute;inset:0;
+  background:var(--card-glow,transparent);
+  opacity:0;transition:opacity .4s;pointer-events:none;
+  border-radius:var(--r-xl);
+}
+.v-card:hover{transform:translateY(-5px);box-shadow:var(--sh-l);border-color:rgba(255,255,255,.13)}
+.v-card:hover::before{opacity:1}
+
+/* Per-card accent colors */
+.v-card.fishing{--card-glow:radial-gradient(ellipse at top left, rgba(45,74,62,.35), transparent 65%)}
+.v-card.fishiq {--card-glow:radial-gradient(ellipse at top left, rgba(58,107,138,.3), transparent 65%)}
+.v-card.wood   {--card-glow:radial-gradient(ellipse at top left, rgba(160,100,40,.25), transparent 65%)}
+.v-card.rentals{--card-glow:radial-gradient(ellipse at top left, rgba(100,60,150,.22), transparent 65%)}
+
+.v-icon{font-size:2.4rem;margin-bottom:18px;line-height:1}
+.v-label{
+  font-size:.7rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  margin-bottom:10px;
+}
+.v-card.fishing .v-label{color:#5db88a}
+.v-card.fishiq  .v-label{color:#5fa8d3}
+.v-card.wood    .v-label{color:#c8895a}
+.v-card.rentals .v-label{color:#a07dc8}
+
+.v-title{font-family:var(--font-d);font-size:1.55rem;font-weight:800;color:#fff;margin-bottom:10px;line-height:1.2}
+.v-desc{font-size:.92rem;color:rgba(255,255,255,.5);line-height:1.75;flex:1;margin-bottom:28px}
+
+.v-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.88rem;font-weight:700;padding:11px 22px;
+  border-radius:10px;border:none;cursor:pointer;
+  transition:background .2s,transform .15s,gap .2s;align-self:flex-start;
+}
+.v-cta:hover{transform:translateY(-1px)}
+.v-cta:hover .arr{margin-left:2px}
+.v-cta.active-link{background:rgba(255,255,255,.1);color:#fff;}
+.v-cta.active-link:hover{background:rgba(255,255,255,.17)}
+.v-cta.soon{background:rgba(255,255,255,.06);color:rgba(255,255,255,.35);cursor:default}
+.v-cta.soon:hover{transform:none}
+
+.soon-badge{
+  display:inline-block;background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.3);font-size:.68rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 10px;border-radius:20px;margin-bottom:10px;
+}
+
+/* ── ABOUT STRIP ── */
+.about-strip{
+  background:var(--ink-lt);border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  padding:72px 0;
+}
+.about-inner{
+  display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;
+}
+.about-inner h2{
+  font-family:var(--font-d);font-size:clamp(1.6rem,3.5vw,2.4rem);
+  font-weight:900;color:#fff;margin-bottom:14px;line-height:1.15;
+}
+.about-inner p{font-size:.97rem;color:rgba(255,255,255,.52);line-height:1.8;margin-bottom:16px}
+.about-inner p:last-child{margin-bottom:0}
+.about-facts{display:flex;flex-direction:column;gap:18px}
+.fact{display:flex;align-items:flex-start;gap:16px}
+.fact-icon{font-size:1.5rem;margin-top:2px;flex-shrink:0}
+.fact-text strong{display:block;color:#fff;font-weight:600;font-size:.95rem;margin-bottom:2px}
+.fact-text span{font-size:.88rem;color:rgba(255,255,255,.45);line-height:1.6}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--ink);border-top:1px solid rgba(255,255,255,.07);
+  padding:48px 0 32px;text-align:center;
+}
+.foot-logo{
+  font-family:var(--font-d);font-size:1.3rem;font-weight:900;
+  color:#fff;margin-bottom:8px;
+}
+.foot-sub{font-size:.85rem;color:rgba(255,255,255,.32);margin-bottom:24px}
+.foot-links{
+  display:flex;justify-content:center;gap:28px;flex-wrap:wrap;
+  list-style:none;margin-bottom:32px;
+}
+.foot-links a{font-size:.88rem;color:rgba(255,255,255,.45);transition:color .2s}
+.foot-links a:hover{color:rgba(255,255,255,.85)}
+.foot-copy{font-size:.78rem;color:rgba(255,255,255,.22)}
+
+/* ── ANIMATIONS ── */
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.fade-up.vis{opacity:1;transform:translateY(0)}
+.fade-up:nth-child(2){transition-delay:.1s}
+.fade-up:nth-child(3){transition-delay:.2s}
+.fade-up:nth-child(4){transition-delay:.3s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .v-grid{grid-template-columns:1fr}
+  .about-inner{grid-template-columns:1fr;gap:40px}
+  .hero{padding:100px 24px 80px}
+}
+@media(max-width:480px){
+  .container{padding:0 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🏢 Pickett Enterprises LLC &nbsp;·&nbsp; Acton, MA</div>
+  <h1><span>Pickett<br>Dynamics</span></h1>
+  <p class="hero-sub">A portfolio of community-driven ventures built around the outdoors, education, and local living in the Acton, MA area.</p>
+  <div class="hero-scroll">
+    <span>Explore our ventures</span>
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<!-- VENTURES -->
+<section class="ventures">
+  <div class="container">
+    <p class="sec-eyebrow fade-up">What We Do</p>
+    <h2 class="sec-heading fade-up">Our Ventures</h2>
+    <p class="sec-sub fade-up">Each venture is community-first — accessible, local, and built around something worth doing.</p>
+
+    <div class="v-grid">
+
+      <!-- Hooked on Fishing -->
+      <div class="v-card fishing fade-up">
+        <div class="v-icon">🎣</div>
+        <p class="v-label">Outdoor Education</p>
+        <h3 class="v-title">Hooked on Fishing</h3>
+        <p class="v-desc">Free community fishing sessions at NARA Park in Acton, MA. All ages, all skill levels, all equipment provided. Come for the fish — stay for the community.</p>
+        <a href="HookedOnFishing/index.html" class="v-cta active-link">Visit site <span class="arr">→</span></a>
+      </div>
+
+      <!-- FishIQ -->
+      <div class="v-card fishiq fade-up">
+        <div class="v-icon">🧠</div>
+        <div class="soon-badge">Coming Soon</div>
+        <p class="v-label">Fishing Education</p>
+        <h3 class="v-title">FishIQ</h3>
+        <p class="v-desc">Deeper learning for anglers of all levels — species identification, local habitat guides, gear tutorials, and more. Know your water.</p>
+        <span class="v-cta soon">In development</span>
+      </div>
+
+      <!-- WoodWorking -->
+      <div class="v-card wood fade-up">
+        <div class="v-icon">🪵</div>
+        <div class="soon-badge">Coming Soon</div>
+        <p class="v-label">Craftsmanship</p>
+        <h3 class="v-title">WoodWorking</h3>
+        <p class="v-desc">Handcrafted woodwork made in Acton — custom pieces, small-batch goods, and workshop projects. Built with care, built to last.</p>
+        <span class="v-cta soon">In development</span>
+      </div>
+
+      <!-- Rentals -->
+      <div class="v-card rentals fade-up">
+        <div class="v-icon">🏠</div>
+        <div class="soon-badge">Coming Soon</div>
+        <p class="v-label">Local Rentals</p>
+        <h3 class="v-title">Rentals</h3>
+        <p class="v-desc">Equipment, space, and gear available for rent to local residents. More details coming soon.</p>
+        <span class="v-cta soon">In development</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT STRIP -->
+<section class="about-strip">
+  <div class="container">
+    <div class="about-inner">
+      <div class="fade-up">
+        <p class="sec-eyebrow" style="margin-bottom:12px">About Pickett Dynamics</p>
+        <h2>Building something worth doing in Acton, MA</h2>
+        <p>Pickett Dynamics is the operating umbrella for a growing set of community ventures founded and run by Matthew Pickett — all rooted in the Acton, MA area and built around the idea that good businesses make their community better.</p>
+        <p>Each venture starts small, stays local, and grows from genuine interest rather than trend-chasing.</p>
+      </div>
+      <div class="about-facts fade-up">
+        <div class="fact">
+          <div class="fact-icon">📍</div>
+          <div class="fact-text">
+            <strong>Based in Acton, Massachusetts</strong>
+            <span>All ventures are local-first, serving the Acton and surrounding MetroWest community.</span>
+          </div>
+        </div>
+        <div class="fact">
+          <div class="fact-icon">🤝</div>
+          <div class="fact-text">
+            <strong>Community-driven</strong>
+            <span>Free or accessible programs, honest pricing, and no hidden strings.</span>
+          </div>
+        </div>
+        <div class="fact">
+          <div class="fact-icon">🌱</div>
+          <div class="fact-text">
+            <strong>Built to grow</strong>
+            <span>Each venture is designed to expand thoughtfully — not rushed, not overbuilt.</span>
+          </div>
+        </div>
+        <div class="fact">
+          <div class="fact-icon">✉️</div>
+          <div class="fact-text">
+            <strong>Get in touch</strong>
+            <span><a href="mailto:info@pickett-enterprisesllc.com" style="color:var(--sand);font-weight:600">info@pickett-enterprisesllc.com</a></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">Pickett Dynamics</div>
+  <p class="foot-sub">A portfolio of ventures by Pickett Enterprises LLC</p>
+  <ul class="foot-links">
+    <li><a href="HookedOnFishing/index.html">Hooked on Fishing</a></li>
+    <li><a href="#">FishIQ</a></li>
+    <li><a href="#">WoodWorking</a></li>
+    <li><a href="#">Rentals</a></li>
+    <li><a href="mailto:info@pickett-enterprisesllc.com">Contact</a></li>
+  </ul>
+  <p class="foot-copy">&copy; 2026 Pickett Enterprises LLC &nbsp;·&nbsp; Pickett Dynamics &nbsp;·&nbsp; All rights reserved.</p>
+</footer>
+
+<script>
+(function(){
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}
+    });
+  },{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+  document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+})();
+</script>
+</body>
+</html>

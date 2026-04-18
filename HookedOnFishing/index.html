@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hooked on Fishing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --forest:#2d4a3e;--lake:#3a6b8a;--sand:#d9c9a8;--cream:#f5f1ea;--charcoal:#1f2421;
+  --forest-lt:#3d6b57;--lake-lt:#e8f2f8;--sand-lt:#faf6ed;--muted:#6b7c74;
+  --white:#ffffff;
+  --sh-s:0 2px 8px rgba(31,36,33,.08);--sh-m:0 4px 20px rgba(31,36,33,.13);--sh-l:0 8px 40px rgba(31,36,33,.2);
+  --r-s:8px;--r-m:12px;--r-l:16px;--r-xl:24px;
+  --nav-h:68px;
+  --font:Inter,system-ui,sans-serif;--font-d:'Playfair Display',Georgia,serif;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font);background:var(--cream);color:var(--charcoal);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+button{cursor:pointer;font-family:inherit}
+a{text-decoration:none;color:inherit}
+.container{max-width:1100px;margin:0 auto;padding:0 28px}
+.spad{padding:80px 0}
+
+/* ANIMATIONS */
+.fade-up{opacity:0;transform:translateY(26px);transition:opacity .55s ease,transform .55s ease}
+.fade-up.vis{opacity:1;transform:translateY(0)}
+.fade-up:nth-child(2){transition-delay:.1s}
+.fade-up:nth-child(3){transition-delay:.2s}
+.fade-up:nth-child(4){transition-delay:.3s}
+@keyframes pageFade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.page-enter{animation:pageFade .32s ease}
+
+/* PAGES */
+.page{display:none}
+.page.active{display:block}
+
+/* ═══ NAV ═══ */
+.nav{position:fixed;top:0;left:0;right:0;z-index:900;height:var(--nav-h);
+  background:rgba(245,241,234,.88);backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(45,74,62,.07);transition:background .3s,box-shadow .3s}
+.nav.scrolled{background:rgba(31,36,33,.93);box-shadow:var(--sh-m)}
+.nav.scrolled .nav-logo,.nav.scrolled .nav-link{color:#fff}
+.nav.scrolled .nav-link:hover{color:var(--sand)}
+.nav.scrolled .ham span{background:#fff}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 28px;height:100%;
+  display:flex;align-items:center;justify-content:space-between;gap:20px}
+.nav-logo{font-family:var(--font-d);font-size:1.2rem;font-weight:800;color:var(--forest);
+  white-space:nowrap;display:flex;align-items:center;gap:9px}
+.nav-fish{font-size:1.1rem;cursor:pointer;user-select:none;
+  display:inline-block;transition:transform .2s}
+.nav-fish:hover{transform:scale(1.2)rotate(10deg)}
+.nav-fish.flash{animation:ff .3s}
+@keyframes ff{0%,100%{transform:scale(1)}50%{transform:scale(1.5)rotate(15deg)}}
+.nav-links{display:flex;align-items:center;gap:2px;list-style:none}
+.nav-link{color:var(--charcoal);font-size:.9rem;font-weight:500;
+  padding:7px 15px;border-radius:6px;transition:color .2s,background .2s;
+  position:relative;white-space:nowrap}
+.nav-link::after{content:'';position:absolute;bottom:2px;left:15px;right:15px;
+  height:2px;background:var(--lake);border-radius:1px;
+  transform:scaleX(0);transition:transform .2s}
+.nav-link:hover{color:var(--lake)}
+.nav-link.active{color:var(--lake);font-weight:600}
+.nav-link.active::after{transform:scaleX(1)}
+.ham{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:8px}
+.ham span{display:block;width:22px;height:2px;background:var(--charcoal);border-radius:2px;transition:all .3s}
+.ham.open span:nth-child(1){transform:translateY(7px)rotate(45deg)}
+.ham.open span:nth-child(2){opacity:0}
+.ham.open span:nth-child(3){transform:translateY(-7px)rotate(-45deg)}
+.mob-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;
+  background:var(--charcoal);padding:16px 28px 28px;z-index:899;
+  flex-direction:column;gap:4px}
+.mob-menu.open{display:flex}
+.mob-menu .nav-link{color:rgba(255,255,255,.82);font-size:1rem;padding:12px 0;
+  border-radius:0;border-bottom:1px solid rgba(255,255,255,.08)}
+.mob-menu .nav-link:last-child{border-bottom:none}
+.mob-menu .nav-link::after{display:none}
+.mob-menu .nav-link.active{color:var(--sand)}
+
+/* ADMIN BADGE */
+.admin-badge{display:none;position:fixed;top:calc(var(--nav-h) + 10px);left:50%;transform:translateX(-50%);
+  background:var(--forest);color:#fff;font-size:.82rem;font-weight:600;
+  padding:8px 20px;border-radius:30px;box-shadow:var(--sh-m);z-index:800;
+  align-items:center;gap:10px;white-space:nowrap}
+.admin-badge.visible{display:flex}
+.admin-badge button{background:rgba(255,255,255,.2);border:none;color:#fff;
+  padding:3px 12px;border-radius:20px;font-size:.78rem;transition:background .2s}
+.admin-badge button:hover{background:rgba(255,255,255,.35)}
+
+/* SECTION LABELS */
+.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--lake);margin-bottom:10px}
+.sec-heading{font-family:var(--font-d);font-size:clamp(1.8rem,4vw,2.8rem);
+  font-weight:900;line-height:1.1;margin-bottom:10px}
+.sec-sub{font-size:1rem;color:var(--muted);line-height:1.75;max-width:560px}
+.sec-hdr{margin-bottom:40px}
+
+/* ═══ HOME – HERO ═══ */
+.hero{position:relative;height:100vh;min-height:580px;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  background:var(--charcoal)}
+.hero-bg{position:absolute;inset:0;
+  background:url('NaraPark.jpg') center/cover no-repeat;
+  transform:scale(1.06);transition:transform 9s ease}
+.hero-bg.kbloaded{transform:scale(1)}
+.hero-ovl{position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(0,0,0,.08) 0%,rgba(0,0,0,.62) 100%)}
+.hero-content{position:relative;z-index:2;text-align:center;padding:0 24px;max-width:800px}
+.hero-eyebrow{font-size:.82rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--sand);margin-bottom:18px;opacity:.92}
+.hero h1{font-family:var(--font-d);font-size:clamp(3rem,8vw,6rem);font-weight:900;
+  color:#fff;letter-spacing:-.025em;line-height:1.05;margin-bottom:22px;
+  text-shadow:0 2px 24px rgba(0,0,0,.35)}
+.hero-sub{font-size:clamp(.95rem,1.8vw,1.12rem);color:rgba(255,255,255,.88);
+  line-height:1.78;max-width:640px;margin:0 auto 36px}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-hero-p{background:var(--lake);color:#fff;border:none;
+  padding:14px 34px;border-radius:var(--r-m);font-size:1rem;font-weight:600;
+  box-shadow:0 4px 18px rgba(58,107,138,.45);
+  transition:background .2s,transform .15s,box-shadow .2s}
+.btn-hero-p:hover{background:#4a85ab;transform:translateY(-2px);box-shadow:0 8px 26px rgba(58,107,138,.5)}
+.btn-hero-s{background:rgba(255,255,255,.14);backdrop-filter:blur(8px);
+  border:1.5px solid rgba(255,255,255,.48);color:#fff;
+  padding:14px 34px;border-radius:var(--r-m);font-size:1rem;font-weight:600;
+  transition:background .2s,transform .15s}
+.btn-hero-s:hover{background:rgba(255,255,255,.26);transform:translateY(-2px)}
+.scroll-ind{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:2;
+  color:rgba(255,255,255,.55);font-size:.72rem;display:flex;flex-direction:column;
+  align-items:center;gap:6px;animation:bob 2.2s infinite}
+@keyframes bob{0%,100%{transform:translateX(-50%)translateY(0)}50%{transform:translateX(-50%)translateY(7px)}}
+
+/* ═══ HOME – HIGHLIGHTS ═══ */
+.highlights{background:var(--cream)}
+.hl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.hl-card{background:var(--white);border-radius:var(--r-l);overflow:hidden;
+  box-shadow:var(--sh-s);transition:transform .3s,box-shadow .3s}
+.hl-card:hover{transform:translateY(-6px);box-shadow:var(--sh-l)}
+.hl-card img{width:100%;height:200px;object-fit:cover}
+.hl-body{padding:20px 22px 24px}
+.hl-label{font-size:.72rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--lake);margin-bottom:6px}
+.hl-title{font-family:var(--font-d);font-size:1.15rem;font-weight:700;
+  margin-bottom:8px;line-height:1.3}
+.hl-desc{font-size:.9rem;color:var(--muted);line-height:1.65;margin-bottom:14px}
+.hl-link{font-size:.88rem;font-weight:600;color:var(--lake);
+  background:none;border:none;padding:0;display:inline-flex;
+  align-items:center;gap:5px;transition:gap .2s}
+.hl-link:hover{gap:9px}
+
+/* ═══ HOME – LOCATION ═══ */
+.loc-section{background:var(--sand-lt)}
+.loc-heading{font-family:var(--font-d);font-size:clamp(1.6rem,4vw,2.4rem);
+  font-weight:800;margin-bottom:12px;line-height:1.15}
+.loc-sub{font-size:1rem;color:var(--muted);max-width:580px;line-height:1.75;margin-bottom:30px}
+.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
+  margin-bottom:36px;max-width:560px}
+.info-item{background:var(--white);padding:14px 18px;border-radius:var(--r-m);
+  box-shadow:var(--sh-s);font-size:.9rem;font-weight:500;
+  display:flex;align-items:center;gap:10px}
+.map-frame{border-radius:var(--r-l);overflow:hidden;box-shadow:var(--sh-m);
+  width:100%;height:380px;border:none;display:block}
+
+/* ═══ ABOUT ═══ */
+.pg-offset{padding-top:var(--nav-h)}
+.about-grid{display:grid;grid-template-columns:340px 1fr;gap:56px;align-items:start}
+.about-photo{width:100%;aspect-ratio:3/4;object-fit:cover;
+  border-radius:var(--r-xl);box-shadow:var(--sh-l)}
+.about-bio p{font-size:1rem;line-height:1.85;margin-bottom:18px;color:var(--charcoal)}
+.about-bio h3{font-family:var(--font-d);font-size:1.2rem;font-weight:800;
+  margin:28px 0 10px;color:var(--forest)}
+.vals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:32px}
+.val-card{background:var(--white);border-radius:var(--r-l);padding:28px 24px;box-shadow:var(--sh-s)}
+.val-icon{font-size:2rem;margin-bottom:14px}
+.val-title{font-family:var(--font-d);font-size:1.1rem;font-weight:800;margin-bottom:8px}
+.val-desc{font-size:.9rem;color:var(--muted);line-height:1.7}
+.contact-card{background:var(--forest);color:#fff;border-radius:var(--r-l);
+  padding:36px 40px;margin-top:48px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:20px}
+.contact-card h3{font-family:var(--font-d);font-size:1.4rem;font-weight:800;margin-bottom:6px}
+.contact-card p{font-size:.92rem;opacity:.82}
+.contact-card a{color:var(--sand);font-weight:600;font-size:1rem}
+.vals-section{background:var(--sand-lt)}
+
+/* ═══ SESSIONS / CALENDAR ═══ */
+.cal-card{background:var(--white);border-radius:var(--r-xl);box-shadow:var(--sh-m);overflow:hidden}
+.cal-header{display:flex;align-items:center;justify-content:space-between;
+  background:var(--forest);color:#fff;padding:20px 28px}
+.cal-header h2{font-family:var(--font-d);font-size:1.2rem;font-weight:800}
+.cal-nav{background:rgba(255,255,255,.18);border:none;color:#fff;
+  width:38px;height:38px;border-radius:50%;font-size:1.2rem;
+  display:flex;align-items:center;justify-content:center;transition:background .2s}
+.cal-nav:hover{background:rgba(255,255,255,.32)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-day-name{text-align:center;background:var(--sand-lt);
+  font-size:.72rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);padding:12px 4px}
+.cal-cell{min-height:82px;border:1px solid rgba(217,201,168,.35);
+  padding:8px 6px;position:relative;background:#fff;transition:background .15s}
+.cal-cell.empty{background:#faf8f4}
+.cal-cell.today .cal-dn{background:var(--forest);color:#fff;border-radius:50%;
+  width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center}
+.cal-cell.has-session{background:var(--lake-lt)}
+.cal-cell.has-session .cal-dn{background:var(--lake);color:#fff;border-radius:50%;
+  width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center}
+.cal-cell.adm:hover{background:#e0f0e0;cursor:pointer}
+.cal-dn{font-size:.88rem;font-weight:700;color:var(--charcoal);
+  display:inline-flex;width:28px;height:28px;align-items:center;justify-content:center}
+.s-fish{font-size:.95rem;display:block;text-align:center;margin-top:2px;line-height:1}
+.s-time{display:block;font-size:.6rem;color:var(--lake);font-weight:700;
+  text-align:center;line-height:1.25;margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-count{display:block;font-size:.58rem;font-weight:700;text-align:center;
+  margin-top:2px;background:rgba(58,107,138,.55);color:#fff;
+  border-radius:8px;padding:1px 5px;white-space:nowrap}
+.cal-legend{padding:14px 28px;font-size:.82rem;color:var(--muted);
+  display:flex;align-items:center;gap:8px;border-top:1px solid var(--sand-lt)}
+.leg-dot{width:16px;height:16px;background:var(--lake);border-radius:50%;display:inline-block;opacity:.6}
+
+/* ═══ GALLERY ═══ */
+.g-controls{display:flex;justify-content:flex-end;margin-bottom:22px}
+.g-grid{columns:3;column-gap:16px}
+.g-item{width:100%;margin-bottom:16px;break-inside:avoid;
+  border-radius:var(--r-m);overflow:hidden;cursor:pointer;
+  position:relative;display:block;
+  transition:transform .3s,box-shadow .3s}
+.g-item:hover{transform:scale(1.02);box-shadow:var(--sh-l)}
+.g-item img{width:100%;display:block;border-radius:var(--r-m)}
+.g-del{display:none;position:absolute;top:8px;right:8px;
+  background:rgba(229,62,62,.88);color:#fff;border:none;
+  width:28px;height:28px;border-radius:50%;font-size:.8rem;
+  align-items:center;justify-content:center;cursor:pointer}
+.g-item:hover .g-del.show{display:flex}
+
+/* Lightbox */
+.lbox{display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.93);z-index:1000;
+  align-items:center;justify-content:center}
+.lbox.open{display:flex}
+.lbox-img{max-width:90vw;max-height:86vh;border-radius:var(--r-m);object-fit:contain}
+.lbox-close,.lbox-prev,.lbox-next{border:none;color:#fff;
+  background:rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;transition:background .2s}
+.lbox-close:hover,.lbox-prev:hover,.lbox-next:hover{background:rgba(255,255,255,.28)}
+.lbox-close{position:absolute;top:20px;right:24px;width:44px;height:44px;font-size:1.4rem}
+.lbox-prev{position:absolute;top:50%;transform:translateY(-50%);left:20px;width:48px;height:48px;font-size:1.5rem}
+.lbox-next{position:absolute;top:50%;transform:translateY(-50%);right:20px;width:48px;height:48px;font-size:1.5rem}
+
+/* Videos */
+.vid-section{margin-top:72px}
+.vid-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.vid-card{background:var(--white);border-radius:var(--r-l);overflow:hidden;
+  box-shadow:var(--sh-s);cursor:pointer;transition:transform .3s,box-shadow .3s}
+.vid-card:hover{transform:translateY(-4px);box-shadow:var(--sh-l)}
+.vid-thumb{position:relative;aspect-ratio:16/9;overflow:hidden}
+.vid-thumb img{width:100%;height:100%;object-fit:cover}
+.play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.28);transition:background .2s}
+.vid-card:hover .play-btn{background:rgba(0,0,0,.48)}
+.vid-body{padding:16px 18px 20px}
+.vid-title{font-family:var(--font-d);font-weight:700;font-size:1rem;margin-bottom:4px}
+.vid-desc{font-size:.85rem;color:var(--muted);line-height:1.6}
+.vid-del{display:none;background:none;border:none;color:#e53e3e;
+  font-size:.8rem;margin-top:8px;padding:0;transition:color .2s}
+.vid-del:hover{color:#c53030}
+
+/* Video modal */
+.vmod{display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.88);z-index:1000;
+  align-items:center;justify-content:center;padding:20px}
+.vmod.open{display:flex}
+.vmod-inner{width:100%;max-width:880px;position:relative}
+.vmod-close{position:absolute;top:-44px;right:0;background:rgba(255,255,255,.14);
+  border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:1.2rem;
+  display:flex;align-items:center;justify-content:center;transition:background .2s}
+.vmod-close:hover{background:rgba(255,255,255,.28)}
+.vmod-wrap{position:relative;padding-bottom:56.25%;height:0;
+  border-radius:var(--r-m);overflow:hidden}
+.vmod-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+
+/* ═══ LEADERBOARD CARDS ═══ */
+.lb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.lb-card{background:var(--white);border-radius:var(--r-xl);box-shadow:var(--sh-s);
+  overflow:hidden;position:relative;transition:transform .3s,box-shadow .3s}
+.lb-card:hover{transform:translateY(-4px);box-shadow:var(--sh-m)}
+.lb-rank{position:absolute;top:14px;left:14px;width:32px;height:32px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:.88rem;z-index:2}
+.r1{background:#ffd700;color:#5c3d1e}
+.r2{background:#c0c0c0;color:#333}
+.r3{background:#cd7f32;color:#fff}
+.rx{background:var(--sand-lt);color:var(--muted)}
+.lb-delbtn{display:none;position:absolute;top:14px;right:14px;
+  background:rgba(229,62,62,.88);border:none;color:#fff;
+  width:28px;height:28px;border-radius:50%;font-size:.78rem;
+  align-items:center;justify-content:center;z-index:2;
+  transition:background .2s}
+.lb-delbtn.show{display:flex}
+.lb-delbtn:hover{background:#c53030}
+.lb-img-wrap{width:100px;height:100px;border-radius:50%;margin:28px auto 0;
+  overflow:hidden;border:4px solid var(--sand);background:var(--sand-lt);
+  display:flex;align-items:center;justify-content:center;font-size:2.6rem}
+.lb-img-wrap img{width:100%;height:100%;object-fit:cover}
+.lb-body{padding:14px 20px 26px;text-align:center}
+.lb-name{font-family:var(--font-d);font-size:1.15rem;font-weight:800;margin-bottom:4px}
+.lb-sz{font-size:2.2rem;font-weight:800;color:var(--lake);line-height:1.1}
+.lb-sz-lbl{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lb-pill{display:inline-block;background:var(--lake-lt);color:var(--lake);
+  font-size:.78rem;font-weight:700;padding:4px 12px;border-radius:20px;margin-top:8px}
+.lb-empty{text-align:center;padding:64px 24px;color:var(--muted);font-size:1.05rem}
+.lb-empty span{font-size:3rem;display:block;margin-bottom:12px}
+
+/* ═══ MODALS (shared) ═══ */
+.modal-ov{display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.54);z-index:500;
+  align-items:center;justify-content:center;padding:16px}
+.modal-ov.open{display:flex}
+.modal{background:#fff;border-radius:var(--r-xl);padding:36px 32px;
+  width:100%;max-width:460px;
+  box-shadow:0 8px 44px rgba(0,0,0,.28);position:relative;
+  animation:mIn .24s ease}
+@keyframes mIn{from{opacity:0;transform:translateY(16px)scale(.97)}to{opacity:1;transform:none}}
+.modal h3{font-family:var(--font-d);font-size:1.35rem;font-weight:800;color:var(--forest);margin-bottom:24px}
+.mcl{position:absolute;top:18px;right:18px;background:none;border:none;
+  font-size:1.5rem;color:var(--muted);line-height:1;transition:color .2s}
+.mcl:hover{color:var(--charcoal)}
+.fg{margin-bottom:18px}
+label{display:block;font-size:.82rem;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+input[type=text],input[type=number],input[type=password],input[type=file],input[type=url],input[type=email],input[type=tel]{
+  width:100%;padding:11px 14px;border:2px solid #e0d8cc;
+  border-radius:var(--r-s);font-size:1rem;color:var(--charcoal);
+  background:var(--cream);transition:border-color .2s;font-family:inherit}
+input:focus{outline:none;border-color:var(--lake)}
+.pw-err{color:#e53e3e;font-size:.84rem;margin-top:6px;display:none}
+.ph-prev{margin-top:10px;display:none}
+.ph-prev img{width:80px;height:80px;object-fit:cover;border-radius:var(--r-s);border:2px solid var(--sand)}
+.m-acts{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
+
+/* BUTTONS */
+.btn-p{background:var(--forest);color:#fff;border:none;
+  padding:11px 24px;border-radius:var(--r-m);font-size:.95rem;font-weight:700;
+  display:inline-flex;align-items:center;gap:7px;
+  transition:background .2s,transform .1s,box-shadow .2s}
+.btn-p:hover{background:var(--forest-lt);transform:translateY(-1px);box-shadow:var(--sh-s)}
+.btn-sec{background:var(--sand-lt);color:var(--charcoal);border:none;
+  padding:11px 20px;border-radius:var(--r-m);font-size:.95rem;font-weight:600;
+  transition:background .2s}
+.btn-sec:hover{background:var(--sand)}
+.row-right{display:flex;justify-content:flex-end;margin-bottom:22px}
+
+/* ═══ FOOTER ═══ */
+footer{background:var(--charcoal);color:rgba(255,255,255,.72);padding:64px 0 0}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;
+  max-width:1100px;margin:0 auto;padding:0 28px}
+.foot-brand{font-family:var(--font-d);font-size:1.18rem;font-weight:800;color:#fff;margin-bottom:10px}
+.foot-desc{font-size:.88rem;line-height:1.72;max-width:240px}
+.foot-hd{font-size:.76rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--sand);margin-bottom:16px}
+.foot-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+.foot-links li a,.foot-links li button{font-size:.9rem;color:rgba(255,255,255,.7);
+  background:none;border:none;padding:0;text-align:left;
+  transition:color .2s;cursor:pointer}
+.foot-links li a:hover,.foot-links li button:hover{color:var(--sand)}
+.foot-contact{font-size:.9rem;line-height:1.85}
+.foot-contact a{color:var(--sand);font-weight:600}
+.foot-bottom{margin-top:48px;padding:18px 28px;
+  border-top:1px solid rgba(255,255,255,.09);
+  max-width:1100px;margin-left:auto;margin-right:auto;
+  text-align:center;font-size:.79rem;color:rgba(255,255,255,.38)}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:1024px){
+  .about-grid{grid-template-columns:260px 1fr;gap:36px}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:32px}
+  .vid-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  :root{--nav-h:60px}
+  .nav-links{display:none}
+  .ham{display:flex}
+  .hl-grid,.vals-grid,.lb-grid{grid-template-columns:1fr}
+  .about-grid{grid-template-columns:1fr}
+  .about-photo{aspect-ratio:4/3;max-height:300px;width:100%}
+  .g-grid{columns:2}
+  .vid-grid{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .info-grid{grid-template-columns:1fr}
+  .contact-card{flex-direction:column;padding:28px 24px}
+  .cal-cell{min-height:58px}
+}
+@media(max-width:480px){
+  .g-grid{columns:1}
+  .foot-grid{grid-template-columns:1fr}
+  .hero-ctas{flex-direction:column;align-items:center}
+  .spad{padding:56px 0}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav class="nav" id="main-nav">
+  <div class="nav-inner">
+    <a href="#home" class="nav-logo" onclick="nav('home');return false">
+      <span class="nav-fish" id="admin-trigger" onclick="fishClick(event)">🎣</span>
+      Hooked on Fishing
+    </a>
+    <ul class="nav-links">
+      <li><a href="#home"        class="nav-link" data-tab="home">Home</a></li>
+      <li><a href="#about"       class="nav-link" data-tab="about">About</a></li>
+      <li><a href="#sessions"    class="nav-link" data-tab="sessions">Sessions</a></li>
+      <li><a href="#gallery"     class="nav-link" data-tab="gallery">Gallery</a></li>
+      <li><a href="#leaderboard" class="nav-link" data-tab="leaderboard">Leaderboard</a></li>
+      <li><a href="#game"        class="nav-link" data-tab="game">Game</a></li>
+    </ul>
+    <button class="ham" id="ham" aria-label="Toggle menu" onclick="toggleMob()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══ MOBILE MENU ═══ -->
+<div class="mob-menu" id="mob-menu">
+  <a href="#home"        class="nav-link" data-tab="home">Home</a>
+  <a href="#about"       class="nav-link" data-tab="about">About</a>
+  <a href="#sessions"    class="nav-link" data-tab="sessions">Sessions</a>
+  <a href="#gallery"     class="nav-link" data-tab="gallery">Gallery</a>
+  <a href="#leaderboard" class="nav-link" data-tab="leaderboard">Leaderboard</a>
+  <a href="#game"        class="nav-link" data-tab="game">Game</a>
+</div>
+
+<!-- ═══ ADMIN BADGE ═══ -->
+<div class="admin-badge" id="admin-badge">
+  🔓 Admin Mode
+  <button onclick="adminLogout()">Log out</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     HOME PAGE
+══════════════════════════════════════ -->
+<div id="page-home" class="page">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg" id="hero-bg"></div>
+    <div class="hero-ovl"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">NARA Park · Acton, Massachusetts</p>
+      <h1>Hooked<br>on Fishing</h1>
+      <p class="hero-sub">Our program is designed to teach and inspire individuals who want to deepen their understanding of nature and the world around them through fishing. We host sessions throughout the week at NARA Park, where participants can learn the fundamentals of fishing or simply enjoy an hour on the water with equipment provided.</p>
+      <div class="hero-ctas">
+        <button class="btn-hero-p" onclick="nav('sessions')">See Upcoming Sessions</button>
+        <button class="btn-hero-s" onclick="nav('gallery')">View Gallery</button>
+      </div>
+    </div>
+    <div class="scroll-ind">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </div>
+  </section>
+
+  <!-- Highlights -->
+  <section class="highlights spad">
+    <div class="container">
+      <div class="hl-grid">
+        <div class="hl-card fade-up">
+          <img src="assets/images/photos/AboutMe.jpg" alt="About Matthew" loading="lazy" style="object-position:top">
+          <div class="hl-body">
+            <p class="hl-label">About</p>
+            <h3 class="hl-title">Meet the Program Lead</h3>
+            <p class="hl-desc">Learn about Matthew Pickett and the story behind Hooked on Fishing.</p>
+            <button class="hl-link" onclick="nav('about')">Learn more →</button>
+          </div>
+        </div>
+        <div class="hl-card fade-up">
+          <img src="NaraPark.jpg" alt="Sessions at NARA Park" loading="lazy">
+          <div class="hl-body">
+            <p class="hl-label">Sessions</p>
+            <h3 class="hl-title">Weekly Fishing Sessions</h3>
+            <p class="hl-desc">Free, equipment-provided sessions at NARA Park for all ages and skill levels.</p>
+            <button class="hl-link" onclick="nav('sessions')">Learn more →</button>
+          </div>
+        </div>
+        <div class="hl-card fade-up">
+          <img src="assets/images/photos/MomentWater.jpg" alt="Moments from the water" loading="lazy">
+          <div class="hl-body">
+            <p class="hl-label">Gallery</p>
+            <h3 class="hl-title">Moments from the Water</h3>
+            <p class="hl-desc">Photos and videos from sessions past — great catches and great times.</p>
+            <button class="hl-link" onclick="nav('gallery')">Learn more →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Location -->
+  <section class="loc-section spad">
+    <div class="container">
+      <div class="fade-up">
+        <p class="eyebrow">Where to Find Us</p>
+        <h2 class="loc-heading">Fishing at NARA Park<br>Acton, Massachusetts</h2>
+        <p class="loc-sub">NARA Park sits along a scenic 65-acre lake in the heart of Acton, MA — a perfect setting for an afternoon of fishing, fresh air, and community. All equipment is provided and every skill level is welcome.</p>
+        <div class="info-grid">
+          <div class="info-item">📍 25 Ledge Rock Way, Acton MA</div>
+          <div class="info-item">👨‍👩‍👧‍👦 All Ages Welcome</div>
+          <div class="info-item">🎣 Equipment Included</div>
+          <div class="info-item">🆓 Free for all</div>
+        </div>
+      </div>
+      <iframe class="map-frame fade-up"
+        src="https://maps.google.com/maps?q=NARA+Park+Acton+MA&output=embed"
+        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+        title="NARA Park map"></iframe>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════
+     ABOUT PAGE
+══════════════════════════════════════ -->
+<div id="page-about" class="page">
+  <div class="pg-offset">
+    <section class="spad">
+      <div class="container">
+        <p class="eyebrow fade-up">About the Program</p>
+        <h1 class="sec-heading fade-up" style="font-size:clamp(2rem,5vw,3rem)">Matthew Pickett</h1>
+        <p class="sec-sub fade-up" style="margin-bottom:48px">Founder and program lead, Hooked on Fishing</p>
+        <div class="about-grid">
+          <div class="fade-up">
+            <img class="about-photo" src="assets/images/photos/AboutMe.jpg" alt="Matthew Pickett" loading="lazy">
+          </div>
+          <div class="about-bio fade-up">
+            <p>Matthew Pickett has been fishing the waters of Acton and the surrounding New England area for over 13 years. What started as a handful of summer afternoons at NARA Park grew into a lifelong passion for the outdoors — and eventually, a desire to share that passion with his community.</p>
+            <p>Matthew founded Hooked on Fishing to give local residents of all ages a welcoming, low-pressure way to learn the basics of fishing or simply enjoy time on the water. Whether you've never held a rod or you've been casting for years, Matthew believes there's always something new to discover about the lakes, the fish, and the quiet rhythm of a morning by the pond.</p>
+            <h3>A Commitment to Community</h3>
+            <p>Matthew's dedication to the program reflects a broader pattern of leadership and service. He serves as captain of his school's football team, where he's learned the value of discipline, communication, and looking out for teammates. As a member of student council, he's developed a track record of following through on commitments and representing his peers responsibly. As a Boy Scout working toward Eagle rank, he brings the core scouting values — trustworthiness, helpfulness, and respect for the outdoors — to every session he runs.</p>
+            <p>Parents can feel confident sending their kids to a Hooked on Fishing session knowing that Matthew treats every participant's safety, experience, and enjoyment as his personal responsibility.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="vals-section spad">
+      <div class="container">
+        <p class="eyebrow fade-up">What We Stand For</p>
+        <h2 class="sec-heading fade-up">Our Values</h2>
+        <div class="vals-grid">
+          <div class="val-card fade-up">
+            <div class="val-icon">🦺</div>
+            <h3 class="val-title">Safety First</h3>
+            <p class="val-desc">Every session starts and ends with a headcount, and I'm CPR/First Aid familiar.</p>
+          </div>
+          <div class="val-card fade-up">
+            <div class="val-icon">🌿</div>
+            <h3 class="val-title">Respect the Water</h3>
+            <p class="val-desc">I teach catch-and-release practices and Leave No Trace principles.</p>
+          </div>
+          <div class="val-card fade-up">
+            <div class="val-icon">🙌</div>
+            <h3 class="val-title">Everyone Welcome</h3>
+            <p class="val-desc">No experience needed. All equipment provided. All ages encouraged.</p>
+          </div>
+        </div>
+        <div class="contact-card fade-up">
+          <div>
+            <h3>Get in Touch</h3>
+            <p>Inquiries from parents and caregivers are always welcome. Private sessions available.</p>
+          </div>
+          <a href="mailto:info@pickett-enterprisesllc.com">info@pickett-enterprisesllc.com</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SESSIONS PAGE
+══════════════════════════════════════ -->
+<div id="page-sessions" class="page">
+  <div class="pg-offset spad">
+    <div class="container">
+      <div class="sec-hdr fade-up">
+        <p class="eyebrow">NARA Park · Acton, MA</p>
+        <h1 class="sec-heading">Upcoming Sessions</h1>
+        <p class="sec-sub">All sessions are free and open to residents. Equipment is provided — just show up ready to fish.</p>
+      </div>
+      <div class="cal-card fade-up">
+        <div class="cal-header">
+          <button class="cal-nav" id="prev-month" aria-label="Previous month">&#8249;</button>
+          <h2 id="cal-title"></h2>
+          <button class="cal-nav" id="next-month" aria-label="Next month">&#8250;</button>
+        </div>
+        <div class="cal-grid" id="cal-grid" role="grid"></div>
+        <div class="cal-legend">
+          <span class="leg-dot"></span>
+          <span>🐟 marks a scheduled session — click a date for details</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     GALLERY PAGE
+══════════════════════════════════════ -->
+<div id="page-gallery" class="page">
+  <div class="pg-offset spad">
+    <div class="container">
+      <div class="sec-hdr fade-up">
+        <p class="eyebrow">Program Photos &amp; Videos</p>
+        <h1 class="sec-heading">From the Water</h1>
+        <p class="sec-sub">A look at sessions, catches, and moments from the Hooked on Fishing community.</p>
+      </div>
+      <div class="g-controls" id="g-controls" style="display:none">
+        <button class="btn-p" onclick="openAddPhoto()">📷 Add Photo</button>
+      </div>
+      <div class="g-grid" id="g-grid"></div>
+
+      <div class="vid-section">
+        <div class="sec-hdr fade-up">
+          <h2 class="sec-heading">Watch the Program</h2>
+          <p class="sec-sub">Get a feel for what a Hooked on Fishing session looks like.</p>
+        </div>
+        <div class="g-controls" id="v-controls" style="display:none">
+          <button class="btn-p" onclick="openAddVideo()">🎬 Add Video</button>
+        </div>
+        <div class="vid-grid" id="vid-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     LEADERBOARD PAGE
+══════════════════════════════════════ -->
+<div id="page-leaderboard" class="page">
+  <div class="pg-offset spad">
+    <div class="container">
+      <div class="sec-hdr fade-up">
+        <p class="eyebrow">Top Catches</p>
+        <h1 class="sec-heading">Biggest Catches</h1>
+        <p class="sec-sub">The all-time leaderboard for Hooked on Fishing, ranked by fish size.</p>
+      </div>
+      <div class="row-right" id="lb-controls" style="display:none">
+        <button class="btn-p" onclick="openAddCatch()">➕ Add Catch</button>
+      </div>
+      <div id="lb-container"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     GAME PAGE
+══════════════════════════════════════ -->
+<div id="page-game" class="page">
+  <div class="pg-offset" style="height:calc(100vh - var(--nav-h));display:flex;flex-direction:column">
+    <iframe src="game.html" style="flex:1;width:100%;border:none;display:block" title="Hook the Fish Game" allowfullscreen></iframe>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer>
+  <div class="foot-grid">
+    <div>
+      <div class="foot-brand">🎣 Hooked on Fishing</div>
+      <p class="foot-desc">A community fishing program at NARA Park in Acton, Massachusetts. Free, fun, and open to all ages.</p>
+    </div>
+    <div>
+      <p class="foot-hd">Quick Links</p>
+      <ul class="foot-links">
+        <li><button onclick="nav('home')">Home</button></li>
+        <li><button onclick="nav('about')">About</button></li>
+        <li><button onclick="nav('sessions')">Sessions</button></li>
+        <li><button onclick="nav('gallery')">Gallery</button></li>
+        <li><button onclick="nav('leaderboard')">Leaderboard</button></li>
+        <li><button onclick="nav('game')">Game</button></li>
+      </ul>
+    </div>
+    <div>
+      <p class="foot-hd">Contact</p>
+      <div class="foot-contact">
+        <a href="mailto:info@pickett-enterprisesllc.com">info@pickett-enterprisesllc.com</a>
+        <p style="margin-top:8px;font-size:.84rem;opacity:.55">Inquiries from parents and caregivers are welcome.</p>
+      </div>
+    </div>
+    <div>
+      <p class="foot-hd">Program</p>
+      <p style="font-size:.88rem;line-height:1.75">A program of<br><strong style="color:#fff">Pickett Enterprises LLC</strong><br>Acton, MA</p>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    &copy; 2026 Pickett Enterprises LLC &nbsp;·&nbsp; Hooked on Fishing &nbsp;·&nbsp; All rights reserved.
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════
+     MODALS
+══════════════════════════════════════ -->
+
+<!-- Password -->
+<div class="modal-ov" id="pw-modal">
+  <div class="modal">
+    <button class="mcl" onclick="closeMod('pw-modal')">&times;</button>
+    <h3>🔒 Admin Login</h3>
+    <div class="fg">
+      <label for="pw-in">Password</label>
+      <input type="password" id="pw-in" placeholder="Enter admin password" autocomplete="current-password">
+      <div class="pw-err" id="pw-err">Incorrect password. Try again.</div>
+    </div>
+    <div class="m-acts">
+      <button class="btn-sec" onclick="closeMod('pw-modal')">Cancel</button>
+      <button class="btn-p" onclick="submitPw()">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Catch -->
+<div class="modal-ov" id="catch-modal">
+  <div class="modal">
+    <button class="mcl" onclick="closeMod('catch-modal')">&times;</button>
+    <h3>🐟 Add New Catch</h3>
+    <div class="fg">
+      <label for="c-name">Angler Name</label>
+      <input type="text" id="c-name" placeholder="e.g. Jamie Rivers" maxlength="60">
+    </div>
+    <div class="fg">
+      <label for="c-size">Fish Size (inches)</label>
+      <input type="number" id="c-size" placeholder="e.g. 14.5" min="0" max="120" step="0.1">
+    </div>
+    <div class="fg">
+      <label for="c-type">Fish Type</label>
+      <input type="text" id="c-type" placeholder="e.g. Largemouth Bass" maxlength="60">
+    </div>
+    <div class="fg">
+      <label for="c-photo">Photo (optional)</label>
+      <input type="file" id="c-photo" accept="image/*" onchange="prevCatch(this)">
+      <div class="ph-prev" id="c-prev"><img id="c-prev-img" src="" alt="Preview"></div>
+    </div>
+    <div class="m-acts">
+      <button class="btn-sec" onclick="closeMod('catch-modal')">Cancel</button>
+      <button class="btn-p" onclick="submitCatch()">Save Catch</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Photo -->
+<div class="modal-ov" id="photo-modal">
+  <div class="modal">
+    <button class="mcl" onclick="closeMod('photo-modal')">&times;</button>
+    <h3>📷 Add Photo</h3>
+    <div class="fg">
+      <label for="p-file">Photo</label>
+      <input type="file" id="p-file" accept="image/*" onchange="prevPhoto(this)">
+      <div class="ph-prev" id="p-prev"><img id="p-prev-img" src="" alt="Preview"></div>
+    </div>
+    <div class="fg">
+      <label for="p-cap">Caption (optional)</label>
+      <input type="text" id="p-cap" placeholder="e.g. First bass of the season" maxlength="120">
+    </div>
+    <div class="m-acts">
+      <button class="btn-sec" onclick="closeMod('photo-modal')">Cancel</button>
+      <button class="btn-p" onclick="submitPhoto()">Add to Gallery</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Video -->
+<div class="modal-ov" id="video-modal-add">
+  <div class="modal">
+    <button class="mcl" onclick="closeMod('video-modal-add')">&times;</button>
+    <h3>🎬 Add Video</h3>
+    <div class="fg">
+      <label for="v-url">YouTube URL</label>
+      <input type="url" id="v-url" placeholder="https://www.youtube.com/watch?v=...">
+    </div>
+    <div class="fg">
+      <label for="v-title">Title</label>
+      <input type="text" id="v-title" placeholder="e.g. Fishing Tips for Beginners" maxlength="80">
+    </div>
+    <div class="fg">
+      <label for="v-desc">Description (optional)</label>
+      <input type="text" id="v-desc" placeholder="Short description" maxlength="120">
+    </div>
+    <div class="m-acts">
+      <button class="btn-sec" onclick="closeMod('video-modal-add')">Cancel</button>
+      <button class="btn-p" onclick="submitVideo()">Add Video</button>
+    </div>
+  </div>
+</div>
+
+<!-- RSVP Modal -->
+<div class="modal-ov" id="rsvp-modal">
+  <div class="modal" style="max-width:500px">
+    <button class="mcl" onclick="closeMod('rsvp-modal')">&times;</button>
+    <h3 id="rsvp-title">Session Details</h3>
+    <div id="rsvp-session-info" style="background:var(--lake-lt);border-radius:var(--r-m);padding:14px 16px;margin-bottom:20px;font-size:.92rem;line-height:1.8"></div>
+    <div id="rsvp-count-line" style="font-size:.88rem;color:var(--muted);margin-bottom:18px"></div>
+
+    <!-- Not yet RSVPed -->
+    <div id="rsvp-form-wrap">
+      <div class="fg">
+        <label for="rsvp-name">Your Name</label>
+        <input type="text" id="rsvp-name" placeholder="e.g. Jamie Rivers" maxlength="80">
+      </div>
+      <div class="fg">
+        <label for="rsvp-email">Email Address</label>
+        <input type="email" id="rsvp-email" placeholder="you@example.com" maxlength="120">
+      </div>
+      <div class="fg">
+        <label for="rsvp-phone">Phone Number (optional)</label>
+        <input type="tel" id="rsvp-phone" placeholder="(555) 000-0000" maxlength="30">
+      </div>
+      <div class="m-acts">
+        <button class="btn-sec" onclick="closeMod('rsvp-modal')">Maybe later</button>
+        <button class="btn-p" onclick="submitRsvp()">🎣 I'll be there!</button>
+      </div>
+    </div>
+
+    <!-- Already RSVPed -->
+    <div id="rsvp-confirmed-wrap" style="display:none">
+      <div style="text-align:center;padding:14px 0 20px;color:var(--forest)">
+        <div style="font-size:2.4rem;margin-bottom:8px">✅</div>
+        <div style="font-family:var(--font-d);font-size:1.2rem;font-weight:800;margin-bottom:4px">You're attending!</div>
+        <div style="font-size:.9rem;color:var(--muted)" id="rsvp-confirmed-name"></div>
+      </div>
+      <div class="m-acts" style="justify-content:center">
+        <button class="btn-sec" onclick="cancelRsvp()">Cancel my RSVP</button>
+        <button class="btn-p" onclick="closeMod('rsvp-modal')">Done</button>
+      </div>
+    </div>
+
+    <!-- Admin attendee list -->
+    <div id="rsvp-admin-list" style="display:none;margin-top:20px;border-top:1px solid var(--sand);padding-top:16px">
+      <p style="font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Attendees</p>
+      <div id="rsvp-admin-rows"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lbox" id="lbox">
+  <button class="lbox-close" onclick="closeLbox()">&times;</button>
+  <button class="lbox-prev" onclick="lboxNav(-1)">&#8249;</button>
+  <img class="lbox-img" id="lbox-img" src="" alt="">
+  <button class="lbox-next" onclick="lboxNav(1)">&#8250;</button>
+</div>
+
+<!-- Video player -->
+<div class="vmod" id="vmod">
+  <div class="vmod-inner">
+    <button class="vmod-close" onclick="closeVmod()">&times;</button>
+    <div class="vmod-wrap">
+      <iframe id="vmod-iframe" src="" allowfullscreen title="Video player"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   CONSTANTS & STATE
+═══════════════════════════════════════ */
+const ADMIN_PW   = 'admin123';
+const LS_SESS    = 'hof_sessions';
+const LS_LB      = 'hof_leaderboard';
+const LS_GAL     = 'hof_gallery';
+const LS_VIDS    = 'hof_videos';
+const LS_RSVP    = 'hof_rsvps';
+const LS_MY_RSVP = 'hof_my_rsvp';
+const TABS       = ['home','about','sessions','gallery','leaderboard','game'];
+
+let isAdmin      = false;
+let fishClicks   = 0;
+let fishTimer    = null;
+let calYear, calMonth;
+let catchPhoto   = null;
+let galleryPhoto = null;
+let lboxImgs     = [];
+let lboxIdx      = 0;
+let rsvpKey      = null;
+
+/* ═══════════════════════════════════════
+   ROUTING
+═══════════════════════════════════════ */
+function nav(tab, push = true) {
+  if (!TABS.includes(tab)) tab = 'home';
+  TABS.forEach(t => {
+    const p = document.getElementById('page-' + t);
+    p.classList.remove('active','page-enter');
+  });
+  const page = document.getElementById('page-' + tab);
+  page.classList.add('active');
+  requestAnimationFrame(() => page.classList.add('page-enter'));
+
+  document.querySelectorAll('.nav-link[data-tab]').forEach(l =>
+    l.classList.toggle('active', l.dataset.tab === tab));
+
+  if (push && location.hash !== '#' + tab)
+    history.pushState({ tab }, '', '#' + tab);
+
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  setTimeout(initObs, 60);
+
+  if (tab === 'sessions')    renderCal();
+  if (tab === 'gallery')     { renderGallery(); renderVideos(); }
+  if (tab === 'leaderboard') renderLB();
+}
+
+function readHash() {
+  const h = location.hash.replace('#','') || 'home';
+  nav(h, false);
+}
+
+window.addEventListener('popstate', readHash);
+
+document.querySelectorAll('.nav-link[data-tab]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    nav(link.dataset.tab);
+    closeMob();
+  });
+});
+
+/* ═══════════════════════════════════════
+   MOBILE NAV
+═══════════════════════════════════════ */
+function toggleMob() {
+  const m = document.getElementById('mob-menu');
+  const b = document.getElementById('ham');
+  const o = m.classList.toggle('open');
+  b.classList.toggle('open', o);
+}
+function closeMob() {
+  document.getElementById('mob-menu').classList.remove('open');
+  document.getElementById('ham').classList.remove('open');
+}
+
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+/* ═══════════════════════════════════════
+   ADMIN AUTH
+═══════════════════════════════════════ */
+function fishClick(e) {
+  e.stopPropagation();
+  const t = document.getElementById('admin-trigger');
+  t.classList.add('flash');
+  setTimeout(() => t.classList.remove('flash'), 350);
+  fishClicks++;
+  clearTimeout(fishTimer);
+  if (fishClicks >= 3) {
+    fishClicks = 0;
+    if (!isAdmin) openMod('pw-modal');
+  } else {
+    fishTimer = setTimeout(() => fishClicks = 0, 1300);
+  }
+}
+
+function submitPw() {
+  const v = document.getElementById('pw-in').value;
+  if (v === ADMIN_PW) {
+    isAdmin = true;
+    closeMod('pw-modal');
+    adminOn();
+  } else {
+    document.getElementById('pw-err').style.display = 'block';
+    document.getElementById('pw-in').style.borderColor = '#e53e3e';
+    document.getElementById('pw-in').value = '';
+    setTimeout(() => document.getElementById('pw-in').style.borderColor = '', 1000);
+    document.getElementById('pw-in').focus();
+  }
+}
+
+function adminOn() {
+  document.getElementById('admin-badge').classList.add('visible');
+  document.getElementById('lb-controls').style.display = 'flex';
+  document.getElementById('g-controls').style.display  = 'flex';
+  document.getElementById('v-controls').style.display  = 'flex';
+  renderCal(); renderLB(); renderGallery(); renderVideos();
+}
+
+function adminLogout() {
+  isAdmin = false;
+  document.getElementById('admin-badge').classList.remove('visible');
+  document.getElementById('lb-controls').style.display = 'none';
+  document.getElementById('g-controls').style.display  = 'none';
+  document.getElementById('v-controls').style.display  = 'none';
+  renderCal(); renderLB(); renderGallery(); renderVideos();
+}
+
+/* ═══════════════════════════════════════
+   CALENDAR
+═══════════════════════════════════════ */
+const MONTHS=['January','February','March','April','May','June',
+              'July','August','September','October','November','December'];
+const DAYS  =['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+function getSess() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LS_SESS)) || {};
+    Object.keys(raw).forEach(k => {
+      if (raw[k] === true) raw[k] = { time:'', location:'NARA Park' };
+    });
+    return raw;
+  } catch { return {}; }
+}
+function saveSess(s) { localStorage.setItem(LS_SESS, JSON.stringify(s)); }
+
+function seedSess() {
+  const s = getSess();
+  if (!s['2026-04-25']) {
+    s['2026-04-25'] = { time:'11:00 AM - 1:00 PM', location:'NARA Park' };
+    saveSess(s);
+  }
+}
+
+function dk(y,m,d) {
+  return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+}
+
+document.getElementById('prev-month').onclick = () => {
+  if (--calMonth < 0) { calMonth=11; calYear--; } renderCal();
+};
+document.getElementById('next-month').onclick = () => {
+  if (++calMonth > 11) { calMonth=0; calYear++; } renderCal();
+};
+
+function renderCal() {
+  document.getElementById('cal-title').textContent = `${MONTHS[calMonth]} ${calYear}`;
+  const sess = getSess();
+  const today = new Date();
+  const first = new Date(calYear, calMonth, 1).getDay();
+  const dim   = new Date(calYear, calMonth+1, 0).getDate();
+  let h = DAYS.map(d=>`<div class="cal-day-name">${d}</div>`).join('');
+  for (let i=0;i<first;i++) h+=`<div class="cal-cell empty"></div>`;
+  for (let d=1;d<=dim;d++) {
+    const key  = dk(calYear,calMonth,d);
+    const s    = sess[key];
+    const has  = !!s;
+    const isT  = today.getFullYear()===calYear && today.getMonth()===calMonth && today.getDate()===d;
+    const adm  = isAdmin ? 'adm' : '';
+    const tl   = has && s.time ? `<span class="s-time">${s.time}</span>` : '';
+    const rsvpCount = has ? (getRsvps()[key]||[]).length : 0;
+    const countBadge = has ? `<span class="s-count">${rsvpCount} attending</span>` : '';
+    const click = isAdmin
+      ? `onclick="toggleSess('${key}')" title="Click to toggle session"`
+      : has ? `onclick="openSessModal('${key}')" style="cursor:pointer"` : '';
+    h+=`<div class="cal-cell ${has?'has-session':''} ${isT?'today':''} ${adm}" ${click}
+        aria-label="${MONTHS[calMonth]} ${d}${has?', session':''}">
+      <span class="cal-dn">${d}</span>
+      ${has?'<span class="s-fish">🐟</span>':''}${tl}${countBadge}
+    </div>`;
+  }
+  document.getElementById('cal-grid').innerHTML = h;
+}
+
+function toggleSess(key) {
+  if (!isAdmin) return;
+  const s = getSess();
+  if (s[key]) {
+    if (!confirm('Remove this session?')) return;
+    delete s[key];
+  } else {
+    const time = prompt('Session time (e.g. 11:00 AM - 1:00 PM):', '');
+    if (time === null) return;
+    const loc = prompt('Location:', 'NARA Park') || 'NARA Park';
+    s[key] = { time: time.trim(), location: loc.trim() };
+  }
+  saveSess(s); renderCal();
+}
+
+/* ═══════════════════════════════════════
+   RSVP SYSTEM
+═══════════════════════════════════════ */
+function getRsvps()  { try{return JSON.parse(localStorage.getItem(LS_RSVP))||{};}  catch{return{};} }
+function saveRsvps(r){ localStorage.setItem(LS_RSVP,JSON.stringify(r)); }
+function getMyRsvps() { try{return JSON.parse(localStorage.getItem(LS_MY_RSVP))||{};}  catch{return{};} }
+function saveMyRsvps(r){ localStorage.setItem(LS_MY_RSVP,JSON.stringify(r)); }
+
+function openSessModal(key) {
+  const s = getSess()[key]; if (!s) return;
+  rsvpKey = key;
+  const [y,m,d] = key.split('-').map(Number);
+  const ds = new Date(y,m-1,d).toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+  document.getElementById('rsvp-title').textContent = '📅 Session Details';
+  document.getElementById('rsvp-session-info').innerHTML =
+    `<strong>${ds}</strong><br>`+
+    (s.time ? `⏰ ${esc(s.time)}<br>` : '')+
+    `📍 ${esc(s.location||'NARA Park')}<br>`+
+    `🎣 Equipment provided &nbsp;·&nbsp; Free for all`;
+
+  const rsvps = getRsvps();
+  const list  = rsvps[key]||[];
+  const myRsvps = getMyRsvps();
+  const myId    = myRsvps[key];
+  const myEntry = list.find(r=>r.id===myId);
+
+  document.getElementById('rsvp-count-line').textContent =
+    list.length === 0 ? 'Be the first to RSVP!' :
+    `${list.length} ${list.length===1?'person':'people'} attending`;
+
+  if (myEntry) {
+    document.getElementById('rsvp-form-wrap').style.display = 'none';
+    document.getElementById('rsvp-confirmed-wrap').style.display = 'block';
+    document.getElementById('rsvp-confirmed-name').textContent = myEntry.name;
+  } else {
+    document.getElementById('rsvp-form-wrap').style.display = 'block';
+    document.getElementById('rsvp-confirmed-wrap').style.display = 'none';
+    ['rsvp-name','rsvp-email','rsvp-phone'].forEach(id=>document.getElementById(id).value='');
+  }
+
+  const adminList = document.getElementById('rsvp-admin-list');
+  if (isAdmin && list.length) {
+    adminList.style.display = 'block';
+    document.getElementById('rsvp-admin-rows').innerHTML = list.map(r=>
+      `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--sand-lt);font-size:.88rem">
+        <div><strong>${esc(r.name)}</strong><br><span style="color:var(--muted)">${esc(r.email)}${r.phone?' · '+esc(r.phone):''}</span></div>
+        <button onclick="adminRemoveRsvp('${key}','${r.id}')" style="background:none;border:none;color:#e53e3e;cursor:pointer;font-size:.82rem">Remove</button>
+       </div>`
+    ).join('');
+  } else {
+    adminList.style.display = 'none';
+  }
+
+  openMod('rsvp-modal');
+  if (!myEntry) setTimeout(()=>document.getElementById('rsvp-name').focus(),80);
+}
+
+function submitRsvp() {
+  const name  = document.getElementById('rsvp-name').value.trim();
+  const email = document.getElementById('rsvp-email').value.trim();
+  const phone = document.getElementById('rsvp-phone').value.trim();
+  if (!name)  return alert('Please enter your name.');
+  if (!email) return alert('Please enter your email address.');
+  const rsvps  = getRsvps();
+  if (!rsvps[rsvpKey]) rsvps[rsvpKey] = [];
+  const entry  = {id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),name,email,phone,at:new Date().toISOString()};
+  rsvps[rsvpKey].push(entry);
+  saveRsvps(rsvps);
+  const mine = getMyRsvps();
+  mine[rsvpKey] = entry.id;
+  saveMyRsvps(mine);
+  openSessModal(rsvpKey);
+  renderCal();
+}
+
+function cancelRsvp() {
+  if (!confirm('Cancel your RSVP for this session?')) return;
+  const rsvps = getRsvps();
+  const mine  = getMyRsvps();
+  const myId  = mine[rsvpKey];
+  if (rsvps[rsvpKey]) rsvps[rsvpKey] = rsvps[rsvpKey].filter(r=>r.id!==myId);
+  delete mine[rsvpKey];
+  saveRsvps(rsvps);
+  saveMyRsvps(mine);
+  openSessModal(rsvpKey);
+  renderCal();
+}
+
+function adminRemoveRsvp(key, id) {
+  const rsvps = getRsvps();
+  if (rsvps[key]) rsvps[key] = rsvps[key].filter(r=>r.id!==id);
+  saveRsvps(rsvps);
+  openSessModal(key);
+  renderCal();
+}
+
+/* ═══════════════════════════════════════
+   LEADERBOARD
+═══════════════════════════════════════ */
+function getLB() { try { return JSON.parse(localStorage.getItem(LS_LB))||[]; } catch{return[];} }
+function saveLB(e) { localStorage.setItem(LS_LB, JSON.stringify(e)); }
+
+function renderLB() {
+  const entries = getLB().sort((a,b) => b.size - a.size);
+  const con = document.getElementById('lb-container');
+  if (!entries.length) {
+    con.innerHTML = `<div class="lb-empty"><span>🎣</span>No catches recorded yet. Be the first to land a big one!</div>`;
+    return;
+  }
+  const cards = entries.map((e,i) => {
+    const r = i+1;
+    const rc = r===1?'r1':r===2?'r2':r===3?'r3':'rx';
+    const img = e.photo
+      ? `<img src="${e.photo}" alt="${esc(e.name)}">`
+      : '🐟';
+    const del = isAdmin
+      ? `<button class="lb-delbtn show" onclick="delCatch('${e.id}')" title="Delete">✕</button>`
+      : '';
+    return `<div class="lb-card fade-up">
+      <span class="lb-rank ${rc}">#${r}</span>${del}
+      <div class="lb-img-wrap">${img}</div>
+      <div class="lb-body">
+        <div class="lb-name">${esc(e.name)}</div>
+        <div class="lb-sz">${e.size}</div>
+        <div class="lb-sz-lbl">inches</div>
+        <span class="lb-pill">${esc(e.fishType)}</span>
+      </div>
+    </div>`;
+  }).join('');
+  con.innerHTML = `<div class="lb-grid">${cards}</div>`;
+  setTimeout(initObs, 50);
+}
+
+function delCatch(id) {
+  if (!isAdmin||!confirm('Remove this entry?')) return;
+  saveLB(getLB().filter(e=>e.id!==id)); renderLB();
+}
+
+function openAddCatch() {
+  catchPhoto = null;
+  ['c-name','c-size','c-type'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('c-photo').value='';
+  document.getElementById('c-prev').style.display='none';
+  openMod('catch-modal');
+  setTimeout(()=>document.getElementById('c-name').focus(),80);
+}
+
+function prevCatch(inp) {
+  const f=inp.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    catchPhoto=ev.target.result;
+    document.getElementById('c-prev-img').src=catchPhoto;
+    document.getElementById('c-prev').style.display='block';
+  };
+  r.readAsDataURL(f);
+}
+
+function submitCatch() {
+  const name=document.getElementById('c-name').value.trim();
+  const size=parseFloat(document.getElementById('c-size').value);
+  const type=document.getElementById('c-type').value.trim();
+  if(!name) return alert("Please enter the angler's name.");
+  if(!size||size<=0) return alert('Please enter a valid fish size.');
+  if(!type) return alert('Please enter the fish type.');
+  const e=getLB();
+  e.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+    name,size,fishType:type,photo:catchPhoto||null,addedAt:new Date().toISOString()});
+  saveLB(e); renderLB(); closeMod('catch-modal');
+}
+
+/* ═══════════════════════════════════════
+   GALLERY – PHOTOS
+═══════════════════════════════════════ */
+const SEED_PHOTOS = [
+  {id:'s1',src:'assets/images/photos/MomentWater.jpg',cap:'On the water'},
+  {id:'s2',src:'assets/images/photos/IMG_3465.jpg',cap:''},
+  {id:'s3',src:'assets/images/photos/IMG_4257.jpg',cap:''},
+  {id:'s4',src:'assets/images/photos/IMG_4834.jpg',cap:''},
+  {id:'s5',src:'assets/images/photos/IMG_4842.jpg',cap:''},
+  {id:'s6',src:'assets/images/photos/IMG_4915.jpg',cap:''},
+  {id:'s7',src:'assets/images/photos/IMG_5442.jpg',cap:''},
+];
+
+function getGal() { try{return JSON.parse(localStorage.getItem(LS_GAL))||[];}catch{return[];} }
+function saveGal(g){ localStorage.setItem(LS_GAL,JSON.stringify(g)); }
+function allPhotos(){ return [...SEED_PHOTOS,...getGal()]; }
+
+function renderGallery() {
+  const all = allPhotos();
+  lboxImgs = all.map(p=>p.src);
+  if (!all.length) {
+    document.getElementById('g-grid').innerHTML='<p style="color:var(--muted);padding:32px 0">No photos yet.</p>';
+    return;
+  }
+  const user = getGal();
+  document.getElementById('g-grid').innerHTML = all.map((p,i)=>{
+    const isUser = !p.id.startsWith('s');
+    const del = isAdmin && isUser
+      ? `<button class="g-del show" onclick="event.stopPropagation();delPhoto('${p.id}')" title="Delete">✕</button>`
+      : '';
+    return `<div class="g-item fade-up" onclick="openLbox(${i})">
+      <img src="${p.src}" alt="${esc(p.cap||'')}" loading="lazy">${del}
+    </div>`;
+  }).join('');
+  setTimeout(initObs,50);
+}
+
+function delPhoto(id){
+  if(!isAdmin) return;
+  saveGal(getGal().filter(p=>p.id!==id)); renderGallery();
+}
+
+function openAddPhoto(){
+  galleryPhoto=null;
+  document.getElementById('p-file').value='';
+  document.getElementById('p-cap').value='';
+  document.getElementById('p-prev').style.display='none';
+  openMod('photo-modal');
+}
+
+function prevPhoto(inp){
+  const f=inp.files[0]; if(!f) return;
+  const kb = Math.round(JSON.stringify(localStorage).length/1024);
+  if(kb>4000) alert('⚠️ Storage is over 4MB. Consider removing older photos first.');
+  const r=new FileReader();
+  r.onload=ev=>{
+    galleryPhoto=ev.target.result;
+    document.getElementById('p-prev-img').src=galleryPhoto;
+    document.getElementById('p-prev').style.display='block';
+  };
+  r.readAsDataURL(f);
+}
+
+function submitPhoto(){
+  if(!galleryPhoto) return alert('Please select a photo.');
+  const cap=document.getElementById('p-cap').value.trim();
+  const g=getGal();
+  g.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+    src:galleryPhoto,cap,addedAt:new Date().toISOString()});
+  try{ saveGal(g); }
+  catch(e){ alert('⚠️ Could not save — localStorage may be full.'); return; }
+  renderGallery(); closeMod('photo-modal');
+}
+
+/* ═══════════════════════════════════════
+   LIGHTBOX
+═══════════════════════════════════════ */
+function openLbox(i){ lboxIdx=i; document.getElementById('lbox-img').src=lboxImgs[i]; document.getElementById('lbox').classList.add('open'); }
+function closeLbox(){ document.getElementById('lbox').classList.remove('open'); }
+function lboxNav(d){ lboxIdx=(lboxIdx+d+lboxImgs.length)%lboxImgs.length; document.getElementById('lbox-img').src=lboxImgs[lboxIdx]; }
+
+/* ═══════════════════════════════════════
+   GALLERY – VIDEOS
+═══════════════════════════════════════ */
+const SEED_VIDS = [
+  {id:'v1',ytId:'ZE5UNyFGZ1Y',title:'Fishing for Beginners',desc:'Everything you need to know to get started with freshwater fishing.'},
+  {id:'v2',ytId:'lTTajzrSkCw',title:'How to Tie Fishing Knots',desc:'Learn the essential knots every angler should know.'},
+];
+
+function getVids(){ try{return JSON.parse(localStorage.getItem(LS_VIDS))||[];}catch{return[];} }
+function saveVids(v){ localStorage.setItem(LS_VIDS,JSON.stringify(v)); }
+function allVids(){ return [...SEED_VIDS,...getVids()]; }
+
+function renderVideos(){
+  const all=allVids();
+  if(!all.length){ document.getElementById('vid-grid').innerHTML='<p style="color:var(--muted)">No videos yet.</p>'; return; }
+  document.getElementById('vid-grid').innerHTML=all.map(v=>{
+    const isUser=!v.id.startsWith('v');
+    const del=isAdmin&&isUser
+      ?`<button class="vid-del" style="display:block" onclick="event.stopPropagation();delVid('${v.id}')">🗑 Remove</button>`:'';
+    return `<div class="vid-card fade-up" onclick="openVmod('${v.ytId}')">
+      <div class="vid-thumb">
+        <img src="https://img.youtube.com/vi/${v.ytId}/hqdefault.jpg" alt="${esc(v.title)}" loading="lazy">
+        <div class="play-btn">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <circle cx="26" cy="26" r="26" fill="rgba(255,255,255,.22)"/>
+            <polygon points="21,17 39,26 21,35" fill="white"/>
+          </svg>
+        </div>
+      </div>
+      <div class="vid-body">
+        <div class="vid-title">${esc(v.title)}</div>
+        <div class="vid-desc">${esc(v.desc||'')}</div>${del}
+      </div>
+    </div>`;
+  }).join('');
+  setTimeout(initObs,50);
+}
+
+function delVid(id){ if(!isAdmin)return; saveVids(getVids().filter(v=>v.id!==id)); renderVideos(); }
+
+function openAddVideo(){
+  ['v-url','v-title','v-desc'].forEach(id=>document.getElementById(id).value='');
+  openMod('video-modal-add');
+  setTimeout(()=>document.getElementById('v-url').focus(),80);
+}
+
+function ytId(url){
+  const m=url.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/);
+  return m?m[1]:null;
+}
+
+function submitVideo(){
+  const url=document.getElementById('v-url').value.trim();
+  const title=document.getElementById('v-title').value.trim();
+  const desc=document.getElementById('v-desc').value.trim();
+  if(!url) return alert('Please enter a YouTube URL.');
+  if(!title) return alert('Please enter a title.');
+  const id=ytId(url);
+  if(!id) return alert('Could not extract YouTube video ID. Please check the URL.');
+  const v=getVids();
+  v.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),ytId:id,title,desc,addedAt:new Date().toISOString()});
+  saveVids(v); renderVideos(); closeMod('video-modal-add');
+}
+
+function openVmod(id){ document.getElementById('vmod-iframe').src=`https://www.youtube.com/embed/${id}?autoplay=1`; document.getElementById('vmod').classList.add('open'); }
+function closeVmod(){ document.getElementById('vmod-iframe').src=''; document.getElementById('vmod').classList.remove('open'); }
+
+/* ═══════════════════════════════════════
+   MODAL HELPERS
+═══════════════════════════════════════ */
+function openMod(id){ document.getElementById(id).classList.add('open'); }
+function closeMod(id){ document.getElementById(id).classList.remove('open'); }
+
+['pw-modal','catch-modal','photo-modal','video-modal-add','rsvp-modal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',e=>{if(e.target===e.currentTarget)closeMod(id);});
+});
+document.getElementById('lbox').addEventListener('click',e=>{if(e.target===e.currentTarget)closeLbox();});
+document.getElementById('vmod').addEventListener('click',e=>{if(e.target===e.currentTarget)closeVmod();});
+
+/* ═══════════════════════════════════════
+   INTERSECTION OBSERVER
+═══════════════════════════════════════ */
+function initObs(){
+  const els=document.querySelectorAll('.fade-up:not(.vis)');
+  if(!els.length) return;
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}});
+  },{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+  els.forEach(el=>obs.observe(el));
+}
+
+/* ═══════════════════════════════════════
+   KEYBOARD
+═══════════════════════════════════════ */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    ['pw-modal','catch-modal','photo-modal','video-modal-add','rsvp-modal'].forEach(closeMod);
+    closeLbox(); closeVmod();
+  }
+  if(e.key==='Enter'&&document.getElementById('pw-modal').classList.contains('open')) submitPw();
+  if(document.getElementById('lbox').classList.contains('open')){
+    if(e.key==='ArrowLeft') lboxNav(-1);
+    if(e.key==='ArrowRight') lboxNav(1);
+  }
+});
+
+/* ═══════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════ */
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+(function init(){
+  const now=new Date();
+  calYear=now.getFullYear(); calMonth=now.getMonth();
+  seedSess();
+  readHash();
+  initObs();
+
+  // Hero Ken Burns effect
+  const bg=document.getElementById('hero-bg');
+  const img=new Image();
+  img.onload=()=>bg.classList.add('kbloaded');
+  img.src='NaraPark.jpg';
+})();
+</script>
+</body>
+</html>
