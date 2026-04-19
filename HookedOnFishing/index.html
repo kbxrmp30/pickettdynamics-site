@@ -712,9 +712,13 @@ footer{background:var(--charcoal);color:rgba(255,255,255,.72);padding:64px 0 0}
     <button class="mcl" onclick="closeMod('pw-modal')">&times;</button>
     <h3>🔒 Admin Login</h3>
     <div class="fg">
+      <label for="pw-email">Email</label>
+      <input type="email" id="pw-email" placeholder="your@email.com" autocomplete="username">
+    </div>
+    <div class="fg">
       <label for="pw-in">Password</label>
-      <input type="password" id="pw-in" placeholder="Enter admin password" autocomplete="current-password">
-      <div class="pw-err" id="pw-err">Incorrect password. Try again.</div>
+      <input type="password" id="pw-in" placeholder="Password" autocomplete="current-password">
+      <div class="pw-err" id="pw-err">Incorrect email or password.</div>
     </div>
     <div class="m-acts">
       <button class="btn-sec" onclick="closeMod('pw-modal')">Cancel</button>
@@ -866,6 +870,7 @@ footer{background:var(--charcoal);color:rgba(255,255,255,.72);padding:64px 0 0}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script>
 /* ═══════════════════════════════════════
    FIREBASE SETUP
@@ -885,7 +890,6 @@ const db = firebase.database();
 /* ═══════════════════════════════════════
    CONSTANTS & STATE
 ═══════════════════════════════════════ */
-const ADMIN_PW   = 'admin123';
 const LS_MY_RSVP = 'hof_my_rsvp';
 const TABS       = ['home','about','sessions','gallery','leaderboard','game'];
 
@@ -1029,6 +1033,22 @@ window.addEventListener('scroll', () => {
 /* ═══════════════════════════════════════
    ADMIN AUTH
 ═══════════════════════════════════════ */
+firebase.auth().onAuthStateChanged(user => {
+  isAdmin = !!user;
+  if (isAdmin) {
+    document.getElementById('admin-badge').classList.add('visible');
+    document.getElementById('lb-controls').style.display = 'flex';
+    document.getElementById('g-controls').style.display  = 'flex';
+    document.getElementById('v-controls').style.display  = 'flex';
+  } else {
+    document.getElementById('admin-badge').classList.remove('visible');
+    document.getElementById('lb-controls').style.display = 'none';
+    document.getElementById('g-controls').style.display  = 'none';
+    document.getElementById('v-controls').style.display  = 'none';
+  }
+  renderCal(); renderLB(); renderGallery(); renderVideos();
+});
+
 function fishClick(e) {
   e.stopPropagation();
   const t = document.getElementById('admin-trigger');
@@ -1038,42 +1058,34 @@ function fishClick(e) {
   clearTimeout(fishTimer);
   if (fishClicks >= 3) {
     fishClicks = 0;
-    if (!isAdmin) openMod('pw-modal');
+    if (!isAdmin) {
+      document.getElementById('pw-email').value = '';
+      document.getElementById('pw-in').value = '';
+      document.getElementById('pw-err').style.display = 'none';
+      openMod('pw-modal');
+      setTimeout(() => document.getElementById('pw-email').focus(), 80);
+    }
   } else {
     fishTimer = setTimeout(() => fishClicks = 0, 1300);
   }
 }
 
 function submitPw() {
-  const v = document.getElementById('pw-in').value;
-  if (v === ADMIN_PW) {
-    isAdmin = true;
-    closeMod('pw-modal');
-    adminOn();
-  } else {
-    document.getElementById('pw-err').style.display = 'block';
-    document.getElementById('pw-in').style.borderColor = '#e53e3e';
-    document.getElementById('pw-in').value = '';
-    setTimeout(() => document.getElementById('pw-in').style.borderColor = '', 1000);
-    document.getElementById('pw-in').focus();
-  }
-}
-
-function adminOn() {
-  document.getElementById('admin-badge').classList.add('visible');
-  document.getElementById('lb-controls').style.display = 'flex';
-  document.getElementById('g-controls').style.display  = 'flex';
-  document.getElementById('v-controls').style.display  = 'flex';
-  renderCal(); renderLB(); renderGallery(); renderVideos();
+  const email = document.getElementById('pw-email').value.trim();
+  const pw    = document.getElementById('pw-in').value;
+  firebase.auth().signInWithEmailAndPassword(email, pw)
+    .then(() => closeMod('pw-modal'))
+    .catch(() => {
+      document.getElementById('pw-err').style.display = 'block';
+      document.getElementById('pw-in').style.borderColor = '#e53e3e';
+      document.getElementById('pw-in').value = '';
+      setTimeout(() => document.getElementById('pw-in').style.borderColor = '', 1000);
+      document.getElementById('pw-in').focus();
+    });
 }
 
 function adminLogout() {
-  isAdmin = false;
-  document.getElementById('admin-badge').classList.remove('visible');
-  document.getElementById('lb-controls').style.display = 'none';
-  document.getElementById('g-controls').style.display  = 'none';
-  document.getElementById('v-controls').style.display  = 'none';
-  renderCal(); renderLB(); renderGallery(); renderVideos();
+  firebase.auth().signOut();
 }
 
 /* ═══════════════════════════════════════
