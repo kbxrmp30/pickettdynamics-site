@@ -374,6 +374,21 @@ footer{background:var(--charcoal);color:rgba(255,255,255,.72);padding:64px 0 0}
   max-width:1100px;margin-left:auto;margin-right:auto;
   text-align:center;font-size:.79rem;color:rgba(255,255,255,.38)}
 
+/* ═══ PAST SESSIONS ═══ */
+.cal-cell.past-session{opacity:.38;pointer-events:none}
+.cal-cell.past-session.adm{pointer-events:auto}
+.cal-cell.past-session.has-session .cal-dn{background:var(--muted)!important}
+
+/* ═══ NEXT SESSION BANNER ═══ */
+#next-sess-banner{
+  display:none;margin-top:22px;
+  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);
+  padding:10px 22px;border-radius:30px;
+  font-size:.88rem;color:rgba(255,255,255,.92);
+  animation:pageFade .5s ease;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;max-width:100%
+}
+
 /* ═══ RESPONSIVE ═══ */
 @media(max-width:1024px){
   .about-grid{grid-template-columns:260px 1fr;gap:36px}
@@ -457,6 +472,7 @@ footer{background:var(--charcoal);color:rgba(255,255,255,.72);padding:64px 0 0}
         <button class="btn-hero-p" onclick="nav('sessions')">See Upcoming Sessions</button>
         <button class="btn-hero-s" onclick="nav('gallery')">View Gallery</button>
       </div>
+      <div id="next-sess-banner"></div>
     </div>
     <div class="scroll-ind">
       <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
@@ -706,6 +722,30 @@ footer{background:var(--charcoal);color:rgba(255,255,255,.72);padding:64px 0 0}
      MODALS
 ══════════════════════════════════════ -->
 
+<!-- Add Session -->
+<div class="modal-ov" id="sess-modal">
+  <div class="modal">
+    <button class="mcl" onclick="closeMod('sess-modal')">&times;</button>
+    <h3>📅 Add Session</h3>
+    <div class="fg">
+      <label>Date</label>
+      <div id="sess-date-disp" style="padding:10px 14px;background:var(--sand-lt);border-radius:var(--r-s);font-size:.95rem;font-weight:600;color:var(--charcoal)"></div>
+    </div>
+    <div class="fg">
+      <label for="sess-time">Time</label>
+      <input type="text" id="sess-time" placeholder="e.g. 11:00 AM – 1:00 PM" maxlength="40">
+    </div>
+    <div class="fg">
+      <label for="sess-loc">Location</label>
+      <input type="text" id="sess-loc" placeholder="NARA Park" maxlength="80">
+    </div>
+    <div class="m-acts">
+      <button class="btn-sec" onclick="closeMod('sess-modal')">Cancel</button>
+      <button class="btn-p" onclick="submitSess()">Add Session</button>
+    </div>
+  </div>
+</div>
+
 <!-- Password -->
 <div class="modal-ov" id="pw-modal">
   <div class="modal">
@@ -844,8 +884,15 @@ footer{background:var(--charcoal);color:rgba(255,255,255,.72);padding:64px 0 0}
 
     <!-- Admin attendee list -->
     <div id="rsvp-admin-list" style="display:none;margin-top:20px;border-top:1px solid var(--sand);padding-top:16px">
-      <p style="font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Attendees</p>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <p style="font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0">Attendees</p>
+        <button onclick="copyAttendeeList()" style="background:none;border:1px solid var(--muted);color:var(--muted);font-size:.78rem;padding:3px 10px;border-radius:20px;cursor:pointer">📋 Copy list</button>
+      </div>
       <div id="rsvp-admin-rows"></div>
+    </div>
+    <!-- Admin session actions -->
+    <div id="rsvp-admin-actions" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--sand-lt)">
+      <button onclick="adminRemoveSess(rsvpKey)" style="background:none;border:none;color:#e53e3e;font-size:.85rem;cursor:pointer;padding:0;font-weight:600">🗑 Remove this session</button>
     </div>
   </div>
 </div>
@@ -871,6 +918,7 @@ footer{background:var(--charcoal);color:rgba(255,255,255,.72);padding:64px 0 0}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 /* ═══════════════════════════════════════
    FIREBASE SETUP
@@ -886,6 +934,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+emailjs.init('xeNvEhsVhteGUuSUc');
 
 /* ═══════════════════════════════════════
    CONSTANTS & STATE
@@ -900,15 +949,16 @@ let _leaderboard = {};
 let _gallery     = {};
 let _videos      = {};
 
-let isAdmin      = false;
-let fishClicks   = 0;
-let fishTimer    = null;
+let isAdmin        = false;
+let fishClicks     = 0;
+let fishTimer      = null;
 let calYear, calMonth;
-let catchPhoto   = null;
-let galleryPhoto = null;
-let lboxImgs     = [];
-let lboxIdx      = 0;
-let rsvpKey      = null;
+let catchPhoto     = null;
+let galleryPhoto   = null;
+let lboxImgs       = [];
+let lboxIdx        = 0;
+let rsvpKey        = null;
+let _pendingSessKey = null;
 
 /* ═══════════════════════════════════════
    FIREBASE LISTENERS
@@ -925,6 +975,7 @@ db.ref('sessions').on('value', snap => {
     }
   }
   renderCal();
+  updateNextSessBanner();
 });
 
 db.ref('rsvps').on('value', snap => {
@@ -1114,19 +1165,21 @@ function renderCal() {
   const dim   = new Date(calYear, calMonth+1, 0).getDate();
   let h = DAYS.map(d=>`<div class="cal-day-name">${d}</div>`).join('');
   for (let i=0;i<first;i++) h+=`<div class="cal-cell empty"></div>`;
+  const todayMidnight = new Date(today.getFullYear(),today.getMonth(),today.getDate());
   for (let d=1;d<=dim;d++) {
     const key  = dk(calYear,calMonth,d);
     const s    = sess[key];
     const has  = !!s;
     const isT  = today.getFullYear()===calYear && today.getMonth()===calMonth && today.getDate()===d;
+    const isPast = new Date(calYear,calMonth,d) < todayMidnight;
     const adm  = isAdmin ? 'adm' : '';
     const tl   = has && s.time ? `<span class="s-time">${s.time}</span>` : '';
     const rsvpCount = has ? (getRsvps()[key]||[]).length : 0;
     const countBadge = has ? `<span class="s-count">${rsvpCount} attending</span>` : '';
     const click = isAdmin
-      ? `onclick="toggleSess('${key}')" title="Click to toggle session"`
-      : has ? `onclick="openSessModal('${key}')" style="cursor:pointer"` : '';
-    h+=`<div class="cal-cell ${has?'has-session':''} ${isT?'today':''} ${adm}" ${click}
+      ? `onclick="toggleSess('${key}')" title="${has?'View session':'Click to add session'}"`
+      : has && !isPast ? `onclick="openSessModal('${key}')" style="cursor:pointer"` : '';
+    h+=`<div class="cal-cell ${has?'has-session':''} ${isT?'today':''} ${isPast?'past-session':''} ${adm}" ${click}
         aria-label="${MONTHS[calMonth]} ${d}${has?', session':''}">
       <span class="cal-dn">${d}</span>
       ${has?'<span class="s-fish">🐟</span>':''}${tl}${countBadge}
@@ -1138,19 +1191,44 @@ function renderCal() {
 function toggleSess(key) {
   if (!isAdmin) return;
   if (_sessions[key]) {
-    if (!confirm('Remove this session?')) return;
-    db.ref(`sessions/${key}`).remove();
-    delete _sessions[key];
-    renderCal();
+    openSessModal(key);
   } else {
-    const time = prompt('Session time (e.g. 11:00 AM - 1:00 PM):', '');
-    if (time === null) return;
-    const loc = prompt('Location:', 'NARA Park') || 'NARA Park';
-    const session = { time: time.trim(), location: loc.trim() };
-    db.ref(`sessions/${key}`).set(session);
-    _sessions[key] = session;
-    renderCal();
+    openAddSessModal(key);
   }
+}
+
+function openAddSessModal(key) {
+  _pendingSessKey = key;
+  const [y,m,d] = key.split('-').map(Number);
+  const dateStr = new Date(y,m-1,d).toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('sess-date-disp').textContent = dateStr;
+  document.getElementById('sess-time').value = '';
+  document.getElementById('sess-loc').value = 'NARA Park';
+  openMod('sess-modal');
+  setTimeout(() => document.getElementById('sess-time').focus(), 80);
+}
+
+function submitSess() {
+  const time = document.getElementById('sess-time').value.trim();
+  const loc  = document.getElementById('sess-loc').value.trim() || 'NARA Park';
+  if (!time) return alert('Please enter a session time.');
+  const session = { time, location: loc };
+  db.ref(`sessions/${_pendingSessKey}`).set(session);
+  _sessions[_pendingSessKey] = session;
+  renderCal();
+  updateNextSessBanner();
+  closeMod('sess-modal');
+}
+
+function adminRemoveSess(key) {
+  if (!confirm('Remove this session and all its RSVPs?')) return;
+  db.ref(`sessions/${key}`).remove();
+  db.ref(`rsvps/${key}`).remove();
+  delete _sessions[key];
+  if (_rsvps[key]) delete _rsvps[key];
+  renderCal();
+  updateNextSessBanner();
+  closeMod('rsvp-modal');
 }
 
 /* ═══════════════════════════════════════
@@ -1191,16 +1269,23 @@ function openSessModal(key) {
   }
 
   const adminList = document.getElementById('rsvp-admin-list');
-  if (isAdmin && list.length) {
-    adminList.style.display = 'block';
-    document.getElementById('rsvp-admin-rows').innerHTML = list.map(r=>
-      `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--sand-lt);font-size:.88rem">
-        <div><strong>${esc(r.name)}</strong><br><span style="color:var(--muted)">${esc(r.email)}${r.phone?' · '+esc(r.phone):''}</span></div>
-        <button onclick="adminRemoveRsvp('${key}','${r.id}')" style="background:none;border:none;color:#e53e3e;cursor:pointer;font-size:.82rem">Remove</button>
-       </div>`
-    ).join('');
+  const adminActions = document.getElementById('rsvp-admin-actions');
+  if (isAdmin) {
+    adminActions.style.display = 'block';
+    if (list.length) {
+      adminList.style.display = 'block';
+      document.getElementById('rsvp-admin-rows').innerHTML = list.map(r=>
+        `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--sand-lt);font-size:.88rem">
+          <div><strong>${esc(r.name)}</strong><br><span style="color:var(--muted)">${esc(r.email)}${r.phone?' · '+esc(r.phone):''}</span></div>
+          <button onclick="adminRemoveRsvp('${key}','${r.id}')" style="background:none;border:none;color:#e53e3e;cursor:pointer;font-size:.82rem">Remove</button>
+         </div>`
+      ).join('');
+    } else {
+      adminList.style.display = 'none';
+    }
   } else {
     adminList.style.display = 'none';
+    adminActions.style.display = 'none';
   }
 
   openMod('rsvp-modal');
@@ -1222,8 +1307,26 @@ function submitRsvp() {
   // Optimistic local update so modal refreshes instantly
   if (!_rsvps[rsvpKey]) _rsvps[rsvpKey] = {};
   _rsvps[rsvpKey][id] = entry;
+  sendRsvpEmail(entry, rsvpKey);
   openSessModal(rsvpKey);
   renderCal();
+}
+
+function sendRsvpEmail(entry, key) {
+  const s = getSess()[key];
+  const [y,m,d] = key.split('-').map(Number);
+  const dateStr = new Date(y,m-1,d).toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const totalCount = Object.values(_rsvps[key]||{}).length;
+  emailjs.send('service_lvfh20a','template_fhd5nxm',{
+    session_date:   dateStr,
+    session_time:   s ? s.time||'TBD' : 'TBD',
+    attendee_name:  entry.name,
+    attendee_email: entry.email,
+    attendee_phone: entry.phone||'Not provided',
+    total_count:    totalCount,
+    name:           entry.name,
+    email:          entry.email
+  }).catch(err=>console.warn('Email notification failed:',err));
 }
 
 function cancelRsvp() {
@@ -1243,6 +1346,37 @@ function adminRemoveRsvp(key, id) {
   if (_rsvps[key]) delete _rsvps[key][id];
   openSessModal(key);
   renderCal();
+}
+
+function copyAttendeeList() {
+  const s    = getSess()[rsvpKey];
+  const list = getRsvps()[rsvpKey]||[];
+  const [y,m,d] = rsvpKey.split('-').map(Number);
+  const dateStr = new Date(y,m-1,d).toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const header = `Hooked on Fishing — ${dateStr}\n${s&&s.time?'Time: '+s.time+'\n':''}${'─'.repeat(40)}\n`;
+  const rows = list.length
+    ? list.map((r,i)=>`${i+1}. ${r.name}\n   Email: ${r.email}\n   Phone: ${r.phone||'—'}`).join('\n\n')
+    : 'No RSVPs yet.';
+  navigator.clipboard.writeText(header+rows+`\n\nTotal: ${list.length}`)
+    .then(()=>alert('Attendee list copied to clipboard!'))
+    .catch(()=>alert('Could not copy — try a different browser.'));
+}
+
+function updateNextSessBanner() {
+  const banner = document.getElementById('next-sess-banner');
+  if (!banner) return;
+  const today = new Date();
+  const todayMidnight = new Date(today.getFullYear(),today.getMonth(),today.getDate());
+  const upcoming = Object.keys(_sessions)
+    .filter(k => new Date(k.replace(/-/g,'/')) >= todayMidnight)
+    .sort();
+  if (!upcoming.length) { banner.style.display='none'; return; }
+  const key = upcoming[0];
+  const s   = _sessions[key];
+  const [y,m,d] = key.split('-').map(Number);
+  const dateStr = new Date(y,m-1,d).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  banner.textContent = `🐟 Next session: ${dateStr}${s.time?' · '+s.time:''} · ${s.location||'NARA Park'}`;
+  banner.style.display = 'inline-block';
 }
 
 /* ═══════════════════════════════════════
@@ -1339,7 +1473,6 @@ function renderGallery() {
     document.getElementById('g-grid').innerHTML='<p style="color:var(--muted);padding:32px 0">No photos yet.</p>';
     return;
   }
-  const user = getGal();
   document.getElementById('g-grid').innerHTML = all.map((p,i)=>{
     const isUser = !p.id.startsWith('s');
     const del = isAdmin && isUser
@@ -1463,7 +1596,7 @@ function closeVmod(){ document.getElementById('vmod-iframe').src=''; document.ge
 function openMod(id){ document.getElementById(id).classList.add('open'); }
 function closeMod(id){ document.getElementById(id).classList.remove('open'); }
 
-['pw-modal','catch-modal','photo-modal','video-modal-add','rsvp-modal'].forEach(id=>{
+['sess-modal','pw-modal','catch-modal','photo-modal','video-modal-add','rsvp-modal'].forEach(id=>{
   document.getElementById(id).addEventListener('click',e=>{if(e.target===e.currentTarget)closeMod(id);});
 });
 document.getElementById('lbox').addEventListener('click',e=>{if(e.target===e.currentTarget)closeLbox();});
@@ -1486,7 +1619,7 @@ function initObs(){
 ═══════════════════════════════════════ */
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
-    ['pw-modal','catch-modal','photo-modal','video-modal-add','rsvp-modal'].forEach(closeMod);
+    ['sess-modal','pw-modal','catch-modal','photo-modal','video-modal-add','rsvp-modal'].forEach(closeMod);
     closeLbox(); closeVmod();
   }
   if(e.key==='Enter'&&document.getElementById('pw-modal').classList.contains('open')) submitPw();
