@@ -864,18 +864,37 @@ footer{background:var(--charcoal);color:rgba(255,255,255,.72);padding:64px 0 0}
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
+/* ═══════════════════════════════════════
+   FIREBASE SETUP
+═══════════════════════════════════════ */
+const firebaseConfig = {
+  apiKey: "AIzaSyAxmmhnSxuNMxIVJtrNDAiazVevJYyxkSE",
+  authDomain: "hooked-on-fishing-648e6.firebaseapp.com",
+  databaseURL: "https://hooked-on-fishing-648e6-default-rtdb.firebaseio.com",
+  projectId: "hooked-on-fishing-648e6",
+  storageBucket: "hooked-on-fishing-648e6.firebasestorage.app",
+  messagingSenderId: "157832579948",
+  appId: "1:157832579948:web:c198c725944c1a77620149"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
 /* ═══════════════════════════════════════
    CONSTANTS & STATE
 ═══════════════════════════════════════ */
 const ADMIN_PW   = 'admin123';
-const LS_SESS    = 'hof_sessions';
-const LS_LB      = 'hof_leaderboard';
-const LS_GAL     = 'hof_gallery';
-const LS_VIDS    = 'hof_videos';
-const LS_RSVP    = 'hof_rsvps';
 const LS_MY_RSVP = 'hof_my_rsvp';
 const TABS       = ['home','about','sessions','gallery','leaderboard','game'];
+
+// Local cache — kept in sync by Firebase real-time listeners
+let _sessions    = {};
+let _rsvps       = {};
+let _leaderboard = {};
+let _gallery     = {};
+let _videos      = {};
 
 let isAdmin      = false;
 let fishClicks   = 0;
@@ -886,6 +905,66 @@ let galleryPhoto = null;
 let lboxImgs     = [];
 let lboxIdx      = 0;
 let rsvpKey      = null;
+
+/* ═══════════════════════════════════════
+   FIREBASE LISTENERS
+═══════════════════════════════════════ */
+let _sessSeeded = false;
+
+db.ref('sessions').on('value', snap => {
+  _sessions = snap.val() || {};
+  if (!_sessSeeded) {
+    _sessSeeded = true;
+    if (!_sessions['2026-04-25']) {
+      db.ref('sessions/2026-04-25').set({ time: '11:00 AM - 1:00 PM', location: 'NARA Park' });
+      return;
+    }
+  }
+  renderCal();
+});
+
+db.ref('rsvps').on('value', snap => {
+  _rsvps = snap.val() || {};
+  renderCal();
+});
+
+db.ref('leaderboard').on('value', snap => {
+  _leaderboard = snap.val() || {};
+  renderLB();
+});
+
+db.ref('gallery').on('value', snap => {
+  _gallery = snap.val() || {};
+  renderGallery();
+});
+
+db.ref('videos').on('value', snap => {
+  _videos = snap.val() || {};
+  renderVideos();
+});
+
+/* ═══════════════════════════════════════
+   DATA ACCESS
+═══════════════════════════════════════ */
+function getSess() { return _sessions; }
+function saveSess(s) { db.ref('sessions').set(s); }
+
+function getRsvps() {
+  const result = {};
+  Object.keys(_rsvps).forEach(key => {
+    result[key] = Object.values(_rsvps[key] || {});
+  });
+  return result;
+}
+function addRsvpEntry(key, entry) { db.ref(`rsvps/${key}/${entry.id}`).set(entry); }
+function removeRsvpEntry(key, id) { db.ref(`rsvps/${key}/${id}`).remove(); }
+
+function getLB()   { return Object.values(_leaderboard); }
+function getGal()  { return Object.values(_gallery); }
+function getVids() { return Object.values(_videos); }
+
+function getMyRsvps()   { try { return JSON.parse(localStorage.getItem(LS_MY_RSVP)) || {}; } catch { return {}; } }
+function saveMyRsvps(r) { localStorage.setItem(LS_MY_RSVP, JSON.stringify(r)); }
 
 /* ═══════════════════════════════════════
    ROUTING
@@ -1004,25 +1083,6 @@ const MONTHS=['January','February','March','April','May','June',
               'July','August','September','October','November','December'];
 const DAYS  =['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-function getSess() {
-  try {
-    const raw = JSON.parse(localStorage.getItem(LS_SESS)) || {};
-    Object.keys(raw).forEach(k => {
-      if (raw[k] === true) raw[k] = { time:'', location:'NARA Park' };
-    });
-    return raw;
-  } catch { return {}; }
-}
-function saveSess(s) { localStorage.setItem(LS_SESS, JSON.stringify(s)); }
-
-function seedSess() {
-  const s = getSess();
-  if (!s['2026-04-25']) {
-    s['2026-04-25'] = { time:'11:00 AM - 1:00 PM', location:'NARA Park' };
-    saveSess(s);
-  }
-}
-
 function dk(y,m,d) {
   return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 }
@@ -1065,26 +1125,25 @@ function renderCal() {
 
 function toggleSess(key) {
   if (!isAdmin) return;
-  const s = getSess();
-  if (s[key]) {
+  if (_sessions[key]) {
     if (!confirm('Remove this session?')) return;
-    delete s[key];
+    db.ref(`sessions/${key}`).remove();
+    delete _sessions[key];
+    renderCal();
   } else {
     const time = prompt('Session time (e.g. 11:00 AM - 1:00 PM):', '');
     if (time === null) return;
     const loc = prompt('Location:', 'NARA Park') || 'NARA Park';
-    s[key] = { time: time.trim(), location: loc.trim() };
+    const session = { time: time.trim(), location: loc.trim() };
+    db.ref(`sessions/${key}`).set(session);
+    _sessions[key] = session;
+    renderCal();
   }
-  saveSess(s); renderCal();
 }
 
 /* ═══════════════════════════════════════
    RSVP SYSTEM
 ═══════════════════════════════════════ */
-function getRsvps()  { try{return JSON.parse(localStorage.getItem(LS_RSVP))||{};}  catch{return{};} }
-function saveRsvps(r){ localStorage.setItem(LS_RSVP,JSON.stringify(r)); }
-function getMyRsvps() { try{return JSON.parse(localStorage.getItem(LS_MY_RSVP))||{};}  catch{return{};} }
-function saveMyRsvps(r){ localStorage.setItem(LS_MY_RSVP,JSON.stringify(r)); }
 
 function openSessModal(key) {
   const s = getSess()[key]; if (!s) return;
@@ -1142,35 +1201,34 @@ function submitRsvp() {
   const phone = document.getElementById('rsvp-phone').value.trim();
   if (!name)  return alert('Please enter your name.');
   if (!email) return alert('Please enter your email address.');
-  const rsvps  = getRsvps();
-  if (!rsvps[rsvpKey]) rsvps[rsvpKey] = [];
-  const entry  = {id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),name,email,phone,at:new Date().toISOString()};
-  rsvps[rsvpKey].push(entry);
-  saveRsvps(rsvps);
-  const mine = getMyRsvps();
+  const id    = Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  const entry = {id,name,email,phone,at:new Date().toISOString()};
+  addRsvpEntry(rsvpKey, entry);
+  const mine  = getMyRsvps();
   mine[rsvpKey] = entry.id;
   saveMyRsvps(mine);
+  // Optimistic local update so modal refreshes instantly
+  if (!_rsvps[rsvpKey]) _rsvps[rsvpKey] = {};
+  _rsvps[rsvpKey][id] = entry;
   openSessModal(rsvpKey);
   renderCal();
 }
 
 function cancelRsvp() {
   if (!confirm('Cancel your RSVP for this session?')) return;
-  const rsvps = getRsvps();
-  const mine  = getMyRsvps();
-  const myId  = mine[rsvpKey];
-  if (rsvps[rsvpKey]) rsvps[rsvpKey] = rsvps[rsvpKey].filter(r=>r.id!==myId);
+  const mine = getMyRsvps();
+  const myId = mine[rsvpKey];
+  removeRsvpEntry(rsvpKey, myId);
   delete mine[rsvpKey];
-  saveRsvps(rsvps);
   saveMyRsvps(mine);
+  if (_rsvps[rsvpKey]) delete _rsvps[rsvpKey][myId];
   openSessModal(rsvpKey);
   renderCal();
 }
 
 function adminRemoveRsvp(key, id) {
-  const rsvps = getRsvps();
-  if (rsvps[key]) rsvps[key] = rsvps[key].filter(r=>r.id!==id);
-  saveRsvps(rsvps);
+  removeRsvpEntry(key, id);
+  if (_rsvps[key]) delete _rsvps[key][id];
   openSessModal(key);
   renderCal();
 }
@@ -1178,8 +1236,6 @@ function adminRemoveRsvp(key, id) {
 /* ═══════════════════════════════════════
    LEADERBOARD
 ═══════════════════════════════════════ */
-function getLB() { try { return JSON.parse(localStorage.getItem(LS_LB))||[]; } catch{return[];} }
-function saveLB(e) { localStorage.setItem(LS_LB, JSON.stringify(e)); }
 
 function renderLB() {
   const entries = getLB().sort((a,b) => b.size - a.size);
@@ -1214,7 +1270,7 @@ function renderLB() {
 
 function delCatch(id) {
   if (!isAdmin||!confirm('Remove this entry?')) return;
-  saveLB(getLB().filter(e=>e.id!==id)); renderLB();
+  db.ref(`leaderboard/${id}`).remove();
 }
 
 function openAddCatch() {
@@ -1244,10 +1300,9 @@ function submitCatch() {
   if(!name) return alert("Please enter the angler's name.");
   if(!size||size<=0) return alert('Please enter a valid fish size.');
   if(!type) return alert('Please enter the fish type.');
-  const e=getLB();
-  e.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),
-    name,size,fishType:type,photo:catchPhoto||null,addedAt:new Date().toISOString()});
-  saveLB(e); renderLB(); closeMod('catch-modal');
+  const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  db.ref(`leaderboard/${id}`).set({id,name,size,fishType:type,photo:catchPhoto||null,addedAt:new Date().toISOString()});
+  closeMod('catch-modal');
 }
 
 /* ═══════════════════════════════════════
@@ -1263,8 +1318,6 @@ const SEED_PHOTOS = [
   {id:'s7',src:'assets/images/photos/IMG_5442.jpg',cap:''},
 ];
 
-function getGal() { try{return JSON.parse(localStorage.getItem(LS_GAL))||[];}catch{return[];} }
-function saveGal(g){ localStorage.setItem(LS_GAL,JSON.stringify(g)); }
 function allPhotos(){ return [...SEED_PHOTOS,...getGal()]; }
 
 function renderGallery() {
@@ -1289,7 +1342,7 @@ function renderGallery() {
 
 function delPhoto(id){
   if(!isAdmin) return;
-  saveGal(getGal().filter(p=>p.id!==id)); renderGallery();
+  db.ref(`gallery/${id}`).remove();
 }
 
 function openAddPhoto(){
@@ -1302,8 +1355,6 @@ function openAddPhoto(){
 
 function prevPhoto(inp){
   const f=inp.files[0]; if(!f) return;
-  const kb = Math.round(JSON.stringify(localStorage).length/1024);
-  if(kb>4000) alert('⚠️ Storage is over 4MB. Consider removing older photos first.');
   const r=new FileReader();
   r.onload=ev=>{
     galleryPhoto=ev.target.result;
@@ -1316,12 +1367,10 @@ function prevPhoto(inp){
 function submitPhoto(){
   if(!galleryPhoto) return alert('Please select a photo.');
   const cap=document.getElementById('p-cap').value.trim();
-  const g=getGal();
-  g.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),
-    src:galleryPhoto,cap,addedAt:new Date().toISOString()});
-  try{ saveGal(g); }
-  catch(e){ alert('⚠️ Could not save — localStorage may be full.'); return; }
-  renderGallery(); closeMod('photo-modal');
+  const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  db.ref(`gallery/${id}`).set({id,src:galleryPhoto,cap,addedAt:new Date().toISOString()})
+    .catch(()=>alert('⚠️ Could not save photo — image may be too large.'));
+  closeMod('photo-modal');
 }
 
 /* ═══════════════════════════════════════
@@ -1339,8 +1388,6 @@ const SEED_VIDS = [
   {id:'v2',ytId:'lTTajzrSkCw',title:'How to Tie Fishing Knots',desc:'Learn the essential knots every angler should know.'},
 ];
 
-function getVids(){ try{return JSON.parse(localStorage.getItem(LS_VIDS))||[];}catch{return[];} }
-function saveVids(v){ localStorage.setItem(LS_VIDS,JSON.stringify(v)); }
 function allVids(){ return [...SEED_VIDS,...getVids()]; }
 
 function renderVideos(){
@@ -1369,7 +1416,7 @@ function renderVideos(){
   setTimeout(initObs,50);
 }
 
-function delVid(id){ if(!isAdmin)return; saveVids(getVids().filter(v=>v.id!==id)); renderVideos(); }
+function delVid(id){ if(!isAdmin)return; db.ref(`videos/${id}`).remove(); }
 
 function openAddVideo(){
   ['v-url','v-title','v-desc'].forEach(id=>document.getElementById(id).value='');
@@ -1388,11 +1435,11 @@ function submitVideo(){
   const desc=document.getElementById('v-desc').value.trim();
   if(!url) return alert('Please enter a YouTube URL.');
   if(!title) return alert('Please enter a title.');
-  const id=ytId(url);
-  if(!id) return alert('Could not extract YouTube video ID. Please check the URL.');
-  const v=getVids();
-  v.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),ytId:id,title,desc,addedAt:new Date().toISOString()});
-  saveVids(v); renderVideos(); closeMod('video-modal-add');
+  const vid=ytId(url);
+  if(!vid) return alert('Could not extract YouTube video ID. Please check the URL.');
+  const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  db.ref(`videos/${id}`).set({id,ytId:vid,title,desc,addedAt:new Date().toISOString()});
+  closeMod('video-modal-add');
 }
 
 function openVmod(id){ document.getElementById('vmod-iframe').src=`https://www.youtube.com/embed/${id}?autoplay=1`; document.getElementById('vmod').classList.add('open'); }
@@ -1450,7 +1497,6 @@ function esc(s){
 (function init(){
   const now=new Date();
   calYear=now.getFullYear(); calMonth=now.getMonth();
-  seedSess();
   readHash();
   initObs();
 
