@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Sign Designer — Custom Wood Signs — Pickett Dynamics</title>
+<meta name="description" content="Use free AI tools to design your custom wood sign, then send your concept to Pickett Dynamics for a handcrafted quote.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ww-espresso:#1A110C;--ww-walnut:#2B1A12;--ww-warm:#5A3825;
+  --ww-brass:#B8894A;--ww-brass-dim:rgba(184,137,74,.15);
+  --ww-parchment:#F3E7D3;--ww-cream:#FAF6EF;
+  --ww-charcoal:#24201D;--ww-muted:#8B7355;
+  --ww-muted-lt:rgba(243,231,211,.55);
+  --ww-font:Inter,system-ui,sans-serif;--ww-font-d:'Playfair Display',Georgia,serif;
+  --ww-nav-h:68px;
+  --ww-sh-s:0 2px 10px rgba(43,26,18,.15);--ww-sh-m:0 4px 24px rgba(43,26,18,.22);--ww-sh-l:0 8px 48px rgba(43,26,18,.32);
+  --ww-r-m:10px;--ww-r-l:16px;--ww-r-xl:22px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--ww-font);background:var(--ww-espresso);color:var(--ww-parchment);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}a{text-decoration:none;color:inherit}button{cursor:pointer;font-family:inherit}
+.container{max-width:1100px;margin:0 auto;padding:0 28px}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:900;height:var(--ww-nav-h);
+  background:rgba(26,17,12,.97);backdrop-filter:blur(16px);border-bottom:1px solid rgba(184,137,74,.13)}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 28px;height:100%;
+  display:flex;align-items:center;justify-content:space-between;gap:20px}
+.nav-logo{font-family:var(--ww-font-d);font-size:1.1rem;font-weight:800;color:var(--ww-parchment);
+  display:flex;align-items:center;gap:7px;white-space:nowrap}
+.nav-sep{opacity:.35;font-weight:300;font-family:var(--ww-font)}
+.nav-sub{font-weight:500;font-size:.88rem;font-family:var(--ww-font);color:var(--ww-brass);opacity:.9}
+.nav-links{display:flex;align-items:center;gap:2px;list-style:none}
+.nav-link{color:rgba(243,231,211,.62);font-size:.88rem;font-weight:500;
+  padding:7px 14px;border-radius:6px;transition:color .2s;white-space:nowrap}
+.nav-link:hover{color:var(--ww-parchment)}
+.nav-link.active{color:var(--ww-brass);font-weight:600}
+.ham{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:8px}
+.ham span{display:block;width:22px;height:2px;background:rgba(243,231,211,.7);border-radius:2px;transition:all .3s}
+.ham.open span:nth-child(1){transform:translateY(7px)rotate(45deg)}
+.ham.open span:nth-child(2){opacity:0}
+.ham.open span:nth-child(3){transform:translateY(-7px)rotate(-45deg)}
+.mob-menu{display:none;position:fixed;top:var(--ww-nav-h);left:0;right:0;
+  background:var(--ww-espresso);border-bottom:1px solid rgba(184,137,74,.12);
+  padding:16px 28px 28px;z-index:899;flex-direction:column;gap:4px}
+.mob-menu.open{display:flex}
+.mob-menu .nav-link{color:rgba(243,231,211,.75);font-size:1rem;padding:12px 0;
+  border-radius:0;border-bottom:1px solid rgba(184,137,74,.1)}
+.mob-menu .nav-link.active{color:var(--ww-brass)}
+
+/* BREADCRUMB */
+.breadcrumb{margin-top:var(--ww-nav-h);padding:13px 0;background:var(--ww-walnut);
+  border-bottom:1px solid rgba(184,137,74,.1)}
+.breadcrumb a{font-size:.87rem;font-weight:600;color:rgba(243,231,211,.55);
+  display:inline-flex;align-items:center;gap:5px;transition:color .2s}
+.breadcrumb a:hover{color:var(--ww-brass)}
+
+/* HERO */
+.hero{
+  padding:60px 28px 76px;text-align:center;
+  background:repeating-linear-gradient(92deg,transparent 0,transparent 18px,rgba(90,56,37,.05) 18px,rgba(90,56,37,.05) 19px),
+    radial-gradient(ellipse 130% 90% at 55% 25%,#3D2218 0%,var(--ww-espresso) 65%);
+  border-bottom:1px solid rgba(184,137,74,.1);
+}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;
+  background:rgba(184,137,74,.1);border:1px solid rgba(184,137,74,.28);
+  padding:6px 18px;border-radius:30px;font-size:.77rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ww-brass);margin-bottom:20px}
+.hero h1{font-family:var(--ww-font-d);font-size:clamp(2rem,5vw,3.6rem);
+  font-weight:900;letter-spacing:-.025em;color:var(--ww-parchment);margin-bottom:16px;line-height:1.1}
+.hero-sub{font-size:1rem;color:var(--ww-muted-lt);max-width:560px;margin:0 auto;line-height:1.78}
+
+/* SECTIONS */
+.sec-cream{background:var(--ww-cream);padding:76px 0}
+.sec-walnut{background:var(--ww-walnut);padding:76px 0}
+.sec-espresso{background:var(--ww-espresso);padding:76px 0;border-top:1px solid rgba(184,137,74,.1)}
+.sec-parchment{background:var(--ww-parchment);padding:76px 0}
+.eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ww-brass);margin-bottom:10px}
+.eyebrow.dk{color:var(--ww-warm)}
+.heading-lt{font-family:var(--ww-font-d);font-size:clamp(1.7rem,3.5vw,2.6rem);
+  font-weight:900;line-height:1.1;color:var(--ww-parchment);margin-bottom:14px}
+.heading-dk{font-family:var(--ww-font-d);font-size:clamp(1.7rem,3.5vw,2.6rem);
+  font-weight:900;line-height:1.1;color:var(--ww-charcoal);margin-bottom:14px}
+.rule{width:44px;height:2px;background:var(--ww-brass);margin:0 0 28px}
+
+/* HOW IT WORKS */
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;position:relative;padding-top:8px}
+.steps-grid::before{content:'';position:absolute;top:36px;
+  left:calc(16.67% + 10px);right:calc(16.67% + 10px);
+  height:1px;background:rgba(90,56,37,.18)}
+.step{text-align:center}
+.step-num{width:52px;height:52px;background:var(--ww-brass);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;
+  color:var(--ww-espresso);margin:0 auto 20px;position:relative;z-index:1;
+  box-shadow:0 2px 14px rgba(184,137,74,.42)}
+.step-title{font-family:var(--ww-font-d);font-size:1.05rem;font-weight:800;
+  color:var(--ww-charcoal);margin-bottom:8px}
+.step-desc{font-size:.88rem;color:var(--ww-muted);line-height:1.72}
+
+/* PROMPT INGREDIENTS */
+.ingredients{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.ing{background:rgba(184,137,74,.1);border:1px solid rgba(184,137,74,.22);
+  border-radius:30px;padding:8px 18px;font-size:.86rem;font-weight:500;
+  color:var(--ww-parchment);display:flex;align-items:center;gap:8px}
+.prompt-tip{background:rgba(255,255,255,.04);border:1px solid rgba(184,137,74,.12);
+  border-left:3px solid var(--ww-brass);border-radius:var(--ww-r-m);
+  padding:18px 22px;margin-top:32px;font-size:.9rem;color:var(--ww-muted-lt);line-height:1.75}
+.prompt-tip strong{color:var(--ww-parchment)}
+.prompt-tip em{color:var(--ww-brass);font-style:normal;font-weight:500}
+
+/* EXAMPLE PROMPTS */
+.prompt-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.prompt-card{background:#fff;border-radius:var(--ww-r-l);overflow:hidden;
+  box-shadow:var(--ww-sh-s);border:1px solid rgba(90,56,37,.08)}
+.prompt-card-head{background:var(--ww-warm);padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px}
+.prompt-card-title{font-weight:700;font-size:.9rem;color:var(--ww-parchment)}
+.copy-btn{background:rgba(243,231,211,.15);border:1px solid rgba(243,231,211,.25);
+  color:var(--ww-parchment);font-size:.75rem;font-weight:600;letter-spacing:.04em;
+  padding:5px 14px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap;
+  font-family:inherit}
+.copy-btn:hover{background:rgba(243,231,211,.28)}
+.copy-btn.copied{background:var(--ww-brass);border-color:var(--ww-brass);color:var(--ww-espresso)}
+.prompt-text{padding:20px;font-size:.88rem;color:#5A3825;line-height:1.78;background:#FAF6EF}
+
+/* AI TOOLS */
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.tool-card{background:rgba(255,255,255,.05);border:1px solid rgba(184,137,74,.12);
+  border-radius:var(--ww-r-l);padding:28px 24px;
+  transition:background .3s,transform .3s,box-shadow .3s}
+.tool-card:hover{background:rgba(255,255,255,.09);transform:translateY(-4px);
+  box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.tool-icon{font-size:2.2rem;margin-bottom:14px;display:block}
+.tool-name{font-family:var(--ww-font-d);font-size:1.05rem;font-weight:800;
+  color:var(--ww-parchment);margin-bottom:8px}
+.tool-badge{display:inline-block;font-size:.65rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;padding:3px 10px;border-radius:12px;margin-bottom:12px}
+.badge-free{background:rgba(80,180,80,.12);color:#6dba6d;border:1px solid rgba(80,180,80,.2)}
+.badge-freemium{background:rgba(184,137,74,.12);color:var(--ww-brass);border:1px solid rgba(184,137,74,.2)}
+.tool-desc{font-size:.86rem;color:var(--ww-muted-lt);line-height:1.72;margin-bottom:20px}
+.tool-link{display:inline-flex;align-items:center;gap:6px;font-size:.84rem;
+  font-weight:600;color:var(--ww-brass);transition:color .2s}
+.tool-link:hover{color:var(--ww-parchment)}
+
+/* UPLOAD FORM */
+.form-card{background:#fff;border-radius:var(--ww-r-xl);padding:48px;
+  box-shadow:var(--ww-sh-l);max-width:720px;margin:0 auto}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group.full{grid-column:1/-1}
+label{font-size:.82rem;font-weight:700;color:var(--ww-warm);letter-spacing:.03em}
+input[type="text"],input[type="email"],input[type="tel"],textarea{
+  width:100%;padding:11px 14px;border:1.5px solid rgba(90,56,37,.2);
+  border-radius:var(--ww-r-m);font-family:inherit;font-size:.9rem;color:var(--ww-charcoal);
+  background:#fff;transition:border-color .2s;outline:none}
+input[type="text"]:focus,input[type="email"]:focus,input[type="tel"]:focus,textarea:focus{
+  border-color:var(--ww-brass)}
+textarea{resize:vertical;min-height:100px}
+
+.upload-wrap{border:2px dashed rgba(90,56,37,.22);border-radius:var(--ww-r-l);
+  background:#FDFAF5;transition:border-color .2s,background .2s;overflow:hidden}
+.upload-wrap.dragover,.upload-wrap:focus-within{border-color:var(--ww-brass);background:rgba(184,137,74,.04)}
+.upload-inner{padding:32px;text-align:center;position:relative;cursor:pointer}
+.upload-inner input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon-lg{font-size:2.4rem;margin-bottom:10px;display:block}
+.upload-label-main{font-size:.93rem;font-weight:600;color:var(--ww-warm);margin-bottom:4px}
+.upload-label-sub{font-size:.78rem;color:var(--ww-muted)}
+.upload-preview{display:none;padding:0 20px 20px;text-align:center}
+.upload-preview img{max-height:200px;width:auto;border-radius:var(--ww-r-m);
+  margin:0 auto;box-shadow:var(--ww-sh-s);display:block}
+.upload-fname{font-size:.78rem;color:var(--ww-muted);margin-top:8px}
+
+.btn{display:inline-flex;align-items:center;gap:7px;padding:12px 26px;
+  border-radius:var(--ww-r-m);font-size:.9rem;font-weight:600;border:none;cursor:pointer;
+  transition:background .2s,transform .15s;text-decoration:none;white-space:nowrap;font-family:inherit}
+.btn:hover{transform:translateY(-2px)}
+.btn-brass{background:var(--ww-brass);color:var(--ww-espresso);box-shadow:0 4px 18px rgba(184,137,74,.35)}
+.btn-brass:hover{background:#c99a55}
+.btn-full{width:100%;justify-content:center;font-size:.97rem;padding:15px}
+.btn-brass:disabled{opacity:.55;cursor:not-allowed;transform:none}
+
+.form-msg{border-radius:var(--ww-r-m);padding:13px 16px;font-size:.88rem;
+  margin-top:14px;display:none;line-height:1.55}
+.form-error{background:rgba(200,60,60,.07);border:1px solid rgba(200,60,60,.2);color:#b03030}
+.form-success-inline{background:rgba(80,160,80,.08);border:1px solid rgba(80,160,80,.2);color:#2e7d32}
+
+.success-screen{display:none;text-align:center;padding:16px 0 8px}
+.success-screen .check{font-size:3.5rem;margin-bottom:16px;display:block}
+.success-screen h3{font-family:var(--ww-font-d);font-size:1.5rem;font-weight:800;
+  color:var(--ww-warm);margin-bottom:10px}
+.success-screen p{color:var(--ww-muted);font-size:.93rem;line-height:1.75}
+
+/* FOOTER */
+footer{background:#0f1117;border-top:1px solid rgba(255,255,255,.07);padding:48px 0 32px;text-align:center}
+.foot-logo{font-family:var(--ww-font-d);font-size:1.2rem;font-weight:900;color:#fff;margin-bottom:6px}
+.foot-sub{font-size:.85rem;color:rgba(255,255,255,.32);margin-bottom:22px}
+.foot-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;list-style:none;margin-bottom:28px}
+.foot-links a{font-size:.87rem;color:rgba(255,255,255,.45);transition:color .2s}
+.foot-links a:hover{color:rgba(255,255,255,.85)}
+.foot-copy{font-size:.77rem;color:rgba(255,255,255,.22)}
+
+@media(max-width:768px){
+  .steps-grid{grid-template-columns:1fr;gap:28px}
+  .steps-grid::before{display:none}
+  .prompt-cards{grid-template-columns:1fr}
+  .tools-grid{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+  .form-card{padding:28px 22px}
+  .ham{display:flex}.nav-links{display:none}
+}
+@media(max-width:480px){
+  .container{padding:0 20px}
+  .sec-cream,.sec-walnut,.sec-espresso,.sec-parchment{padding:56px 0}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      Pickett Dynamics <span class="nav-sep">/</span> <span class="nav-sub">Woodworking</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="woodworking-gallery.html" class="nav-link">Gallery</a></li>
+      <li><a href="woodworking-custom-coffee-tables.html" class="nav-link">Coffee Tables</a></li>
+      <li><a href="woodworking-custom-work.html" class="nav-link">Custom Work</a></li>
+      <li><a href="woodworking-sign-designer.html" class="nav-link active">Sign Designer</a></li>
+      <li><a href="woodworking-contact.html" class="nav-link">Contact</a></li>
+    </ul>
+    <button class="ham" id="ham" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mob-menu" id="mobMenu">
+  <a href="woodworking-gallery.html" class="nav-link">Gallery</a>
+  <a href="woodworking-custom-coffee-tables.html" class="nav-link">Coffee Tables</a>
+  <a href="woodworking-custom-work.html" class="nav-link">Custom Work</a>
+  <a href="woodworking-sign-designer.html" class="nav-link active">Sign Designer</a>
+  <a href="woodworking-contact.html" class="nav-link">Contact</a>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="container"><a href="woodworking.html">← Back to Woodworking</a></div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">✏️ AI Sign Designer</div>
+  <h1>Design Your Sign with AI,<br>then Send It to Us</h1>
+  <p class="hero-sub">Use a free AI image tool to generate a visual of exactly what you're picturing. Once you love it, send it over — we'll build the real thing out of wood.</p>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="sec-cream">
+  <div class="container">
+    <p class="eyebrow dk">The Process</p>
+    <h2 class="heading-dk">Three steps to your custom sign</h2>
+    <div class="rule"></div>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3 class="step-title">Build your prompt</h3>
+        <p class="step-desc">Use our guide below to describe your sign — the text, wood type, style, size, and any design details. We've included copy-paste examples to get you started fast.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3 class="step-title">Generate with AI</h3>
+        <p class="step-desc">Paste your prompt into ChatGPT, Adobe Firefly, or Bing Copilot. Adjust and regenerate until it looks right. Save the image to your device.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3 class="step-title">Send it for a quote</h3>
+        <p class="step-desc">Upload your image in the form at the bottom of this page. Add any notes about size, wood preference, or deadline — we'll get back to you within a couple days.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUILD YOUR PROMPT -->
+<section class="sec-walnut">
+  <div class="container">
+    <p class="eyebrow">Prompt Guide</p>
+    <h2 class="heading-lt">What to include in your prompt</h2>
+    <div class="rule"></div>
+    <p style="font-size:.95rem;color:var(--ww-muted-lt);max-width:640px;line-height:1.78">The more specific your prompt, the more accurate the AI result — and the more clearly we can understand what you want. Include as many of these details as you can:</p>
+    <div class="ingredients">
+      <div class="ing">✏️ &nbsp;Text / wording on the sign</div>
+      <div class="ing">🪵 &nbsp;Wood type (walnut, oak, pine, maple)</div>
+      <div class="ing">🎨 &nbsp;Finish (dark stain, natural, painted fill)</div>
+      <div class="ing">📐 &nbsp;Approximate size (e.g. 24" wide)</div>
+      <div class="ing">🔲 &nbsp;Shape (rectangle, arch-top, circle, irregular)</div>
+      <div class="ing">🖋️ &nbsp;Font style (rustic, script, block, serif)</div>
+      <div class="ing">🌲 &nbsp;Border or design elements (pine trees, waves, wildlife)</div>
+      <div class="ing">📍 &nbsp;Where it will hang (home entry, cabin, garage, outdoor)</div>
+    </div>
+    <div class="prompt-tip">
+      <strong>Pro tip:</strong> End every prompt with <em>"photorealistic product photo, clean white studio background, soft lighting"</em> — it tells the AI to render the sign like a real finished piece sitting on a shelf, which gives you a much better preview of what the actual sign will look like.
+    </div>
+  </div>
+</section>
+
+<!-- EXAMPLE PROMPTS -->
+<section class="sec-cream">
+  <div class="container">
+    <p class="eyebrow dk">Ready to Use</p>
+    <h2 class="heading-dk">Copy-paste example prompts</h2>
+    <div class="rule"></div>
+    <p style="font-size:.9rem;color:var(--ww-muted);margin-bottom:32px;line-height:1.72;max-width:580px">These work well in ChatGPT, Bing Copilot, and Adobe Firefly. Swap in your name, text, or wood preference — then hit generate.</p>
+
+    <div class="prompt-cards">
+
+      <div class="prompt-card">
+        <div class="prompt-card-head">
+          <span class="prompt-card-title">🏡 Family / Cabin Sign</span>
+          <button class="copy-btn" onclick="copyPrompt(this,'p1')">Copy</button>
+        </div>
+        <p class="prompt-text" id="p1">Photorealistic product photo of a custom carved wooden sign reading "The Hendersons Est. 2009" in relief lettering. Dark walnut wood, rustic cabin style, white painted letter fill, simple pine tree and mountain silhouette border. Clean white studio background, soft lighting.</p>
+      </div>
+
+      <div class="prompt-card">
+        <div class="prompt-card-head">
+          <span class="prompt-card-title">🌊 Lake House Sign</span>
+          <button class="copy-btn" onclick="copyPrompt(this,'p2')">Copy</button>
+        </div>
+        <p class="prompt-text" id="p2">Photorealistic product photo of a custom wood sign reading "Cedar Lake Cottage" in carved script lettering. Medium oak with natural stain, arch-top shape, small wave accent along the bottom border. Clean white studio background, soft lighting.</p>
+      </div>
+
+      <div class="prompt-card">
+        <div class="prompt-card-head">
+          <span class="prompt-card-title">◻️ Modern &amp; Minimal</span>
+          <button class="copy-btn" onclick="copyPrompt(this,'p3')">Copy</button>
+        </div>
+        <p class="prompt-text" id="p3">Photorealistic product photo of a modern minimalist carved wood sign reading "PARKER" in bold clean serif letters. Light maple, satin finish, no border, simple clean rectangle. White studio background, soft diffused lighting.</p>
+      </div>
+
+      <div class="prompt-card">
+        <div class="prompt-card-head">
+          <span class="prompt-card-title">🔧 Garage / Shop Sign</span>
+          <button class="copy-btn" onclick="copyPrompt(this,'p4')">Copy</button>
+        </div>
+        <p class="prompt-text" id="p4">Photorealistic product photo of a custom carved wooden garage sign reading "Dad's Shop" in bold block letters with a small wrench icon. Dark stained oak, rugged workshop style, rectangular with simple routed edge border. White studio background, natural lighting.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- AI TOOLS -->
+<section class="sec-espresso">
+  <div class="container">
+    <p class="eyebrow">Free Tools</p>
+    <h2 class="heading-lt">Where to generate your image</h2>
+    <div class="rule"></div>
+    <p style="font-size:.92rem;color:var(--ww-muted-lt);max-width:560px;margin-bottom:40px;line-height:1.75">All three are free and work directly in your browser — no software needed. ChatGPT tends to produce the most realistic woodworking results.</p>
+    <div class="tools-grid">
+
+      <div class="tool-card">
+        <span class="tool-icon">💬</span>
+        <div class="tool-name">ChatGPT — DALL·E 3</div>
+        <span class="tool-badge badge-free">Free</span>
+        <p class="tool-desc">The strongest option for realistic wood product shots. Free account required. Start a new chat, paste your prompt, and it generates an image inline. You can ask it to adjust style, wood color, or text until it's right.</p>
+        <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer" class="tool-link">Open ChatGPT ↗</a>
+      </div>
+
+      <div class="tool-card">
+        <span class="tool-icon">🪟</span>
+        <div class="tool-name">Microsoft Copilot</div>
+        <span class="tool-badge badge-free">Free</span>
+        <p class="tool-desc">Free image generation powered by DALL·E — no account required. Go to Copilot, click the image icon, and paste your prompt. Great for quick iterations without signing up for anything.</p>
+        <a href="https://copilot.microsoft.com" target="_blank" rel="noopener noreferrer" class="tool-link">Open Copilot ↗</a>
+      </div>
+
+      <div class="tool-card">
+        <span class="tool-icon">🔥</span>
+        <div class="tool-name">Adobe Firefly</div>
+        <span class="tool-badge badge-freemium">Free tier</span>
+        <p class="tool-desc">Adobe's AI image generator with a free monthly credit allowance. Good at rendering wood textures and realistic materials. Requires a free Adobe account. Results can be downloaded at full resolution.</p>
+        <a href="https://firefly.adobe.com" target="_blank" rel="noopener noreferrer" class="tool-link">Open Firefly ↗</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SEND YOUR DESIGN -->
+<section class="sec-parchment" id="send">
+  <div class="container">
+    <p class="eyebrow dk" style="text-align:center">Get a Quote</p>
+    <h2 class="heading-dk" style="text-align:center">Send us your design</h2>
+    <div class="rule" style="margin:0 auto 14px"></div>
+    <p style="font-size:.92rem;color:var(--ww-muted);text-align:center;max-width:480px;margin:0 auto 48px;line-height:1.78">Upload your AI-generated image and add any notes. We'll review it and get back to you with a quote and timeline — no commitment required.</p>
+
+    <div class="form-card">
+
+      <div class="success-screen" id="successScreen">
+        <span class="check">✅</span>
+        <h3>Got it — we'll be in touch!</h3>
+        <p>We'll review your design and reply to the email you provided, usually within 1–2 business days.</p>
+      </div>
+
+      <form id="signForm" novalidate>
+        <!-- SETUP: Get your free Web3Forms access key at https://web3forms.com — enter matt@pickettdynamics.com to receive submissions -->
+        <input type="hidden" name="access_key" value="9869b53a-b1e4-4724-9fc9-668aa9f7c03f">
+        <input type="hidden" name="subject" value="Custom Sign Design — Quote Request">
+        <input type="hidden" name="from_name" value="Pickett Dynamics Sign Designer">
+        <input type="checkbox" name="botcheck" style="display:none">
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="sd-name">Your name *</label>
+            <input type="text" id="sd-name" name="name" placeholder="Jane Smith" required>
+          </div>
+          <div class="form-group">
+            <label for="sd-email">Email address *</label>
+            <input type="email" id="sd-email" name="email" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="sd-phone">Phone (optional)</label>
+            <input type="tel" id="sd-phone" name="phone" placeholder="555-123-4567">
+          </div>
+          <div class="form-group">
+            <label for="sd-text">Text on the sign *</label>
+            <input type="text" id="sd-text" name="sign_text" placeholder='e.g. "The Johnson Family — Est. 2012"' required>
+          </div>
+          <div class="form-group full">
+            <label for="sd-notes">Additional notes</label>
+            <textarea id="sd-notes" name="notes" placeholder="Approximate size, wood preference, where it will hang, any deadline, or anything else we should know..."></textarea>
+          </div>
+          <div class="form-group full">
+            <label>Your AI-generated image *</label>
+            <div class="upload-wrap" id="uploadWrap">
+              <div class="upload-inner" id="uploadInner">
+                <input type="file" id="fileInput" name="attachment" accept="image/*" required>
+                <span class="upload-icon-lg">🖼️</span>
+                <div class="upload-label-main">Click to upload or drag &amp; drop</div>
+                <div class="upload-label-sub">PNG, JPG, WEBP — max 5 MB</div>
+              </div>
+              <div class="upload-preview" id="uploadPreview">
+                <img id="previewImg" src="" alt="Your sign design">
+                <div class="upload-fname" id="uploadFname"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-msg form-error" id="formError"></div>
+
+        <button type="submit" class="btn btn-brass btn-full" id="submitBtn" style="margin-top:24px">
+          Send for a Quote →
+        </button>
+        <p style="font-size:.75rem;color:var(--ww-muted);text-align:center;margin-top:14px;line-height:1.6">
+          No commitment. We'll review your design and send a quote — you decide from there.
+        </p>
+      </form>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">Pickett Dynamics</div>
+  <p class="foot-sub">A portfolio of ventures by Pickett Enterprises LLC</p>
+  <ul class="foot-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="HookedOnFishing/index.html">Hooked on Fishing</a></li>
+    <li><a href="rentals.html">Rentals</a></li>
+    <li><a href="woodworking.html">Woodworking</a></li>
+    <li><a href="mailto:matt@pickettdynamics.com">Contact</a></li>
+  </ul>
+  <p class="foot-copy">&copy; 2026 Pickett Enterprises LLC &nbsp;·&nbsp; Pickett Dynamics &nbsp;·&nbsp; All rights reserved.</p>
+</footer>
+
+<script>
+(function(){
+  // Mobile nav
+  const ham = document.getElementById('ham');
+  const mob = document.getElementById('mobMenu');
+  ham.addEventListener('click', () => { ham.classList.toggle('open'); mob.classList.toggle('open'); });
+
+  // Copy prompt to clipboard
+  window.copyPrompt = function(btn, id) {
+    const text = document.getElementById(id).textContent.trim();
+    const finish = () => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2200);
+    };
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(finish).catch(fallback);
+    } else { fallback(); }
+    function fallback() {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta); finish();
+    }
+  };
+
+  // File upload preview
+  const fileInput  = document.getElementById('fileInput');
+  const uploadWrap = document.getElementById('uploadWrap');
+  const uploadPrev = document.getElementById('uploadPreview');
+  const previewImg = document.getElementById('previewImg');
+  const uploadFname= document.getElementById('uploadFname');
+  const uploadInner= document.getElementById('uploadInner');
+
+  fileInput.addEventListener('change', showPreview);
+
+  function showPreview() {
+    const file = fileInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      previewImg.src = e.target.result;
+      uploadFname.textContent = file.name;
+      uploadPrev.style.display = 'block';
+      uploadInner.style.paddingBottom = '8px';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Drag and drop
+  uploadWrap.addEventListener('dragover', e => { e.preventDefault(); uploadWrap.classList.add('dragover'); });
+  uploadWrap.addEventListener('dragleave', () => uploadWrap.classList.remove('dragover'));
+  uploadWrap.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadWrap.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      try {
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        fileInput.files = dt.files;
+      } catch(_) {}
+      showPreview();
+    }
+  });
+
+  // Form submission via Web3Forms
+  const form       = document.getElementById('signForm');
+  const submitBtn  = document.getElementById('submitBtn');
+  const formError  = document.getElementById('formError');
+  const successScr = document.getElementById('successScreen');
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    formError.style.display = 'none';
+
+    if (!fileInput.files || !fileInput.files[0]) {
+      formError.textContent = 'Please upload your AI-generated image before submitting.';
+      formError.style.display = 'block';
+      return;
+    }
+
+    submitBtn.textContent = 'Sending…';
+    submitBtn.disabled = true;
+
+    const data = new FormData(form);
+
+    try {
+      const res  = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
+      const json = await res.json();
+      if (json.success) {
+        form.style.display = 'none';
+        successScr.style.display = 'block';
+      } else {
+        throw new Error(json.message || 'Submission failed');
+      }
+    } catch(err) {
+      formError.textContent = 'Something went wrong — please email your image directly to matt@pickettdynamics.com.';
+      formError.style.display = 'block';
+      submitBtn.textContent = 'Send for a Quote →';
+      submitBtn.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>

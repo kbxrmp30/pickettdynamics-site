@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Woodworking & CNC-Crafted Pieces — Pickett Dynamics</title>
+<meta name="description" content="Custom woodworking and CNC-crafted pieces — personalized signs, CNC carvings, epoxy inlays, custom coffee tables, and handcrafted wood gifts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ww-espresso:#1A110C;--ww-walnut:#2B1A12;--ww-warm:#5A3825;
+  --ww-brass:#B8894A;--ww-brass-dim:rgba(184,137,74,.15);
+  --ww-parchment:#F3E7D3;--ww-cream:#FAF6EF;
+  --ww-charcoal:#24201D;--ww-muted:#8B7355;
+  --ww-muted-lt:rgba(243,231,211,.55);
+  --ww-font:Inter,system-ui,sans-serif;--ww-font-d:'Playfair Display',Georgia,serif;
+  --ww-nav-h:68px;
+  --ww-sh-s:0 2px 10px rgba(43,26,18,.18);--ww-sh-m:0 4px 28px rgba(43,26,18,.25);--ww-sh-l:0 8px 48px rgba(43,26,18,.35);
+  --ww-r-s:6px;--ww-r-m:10px;--ww-r-l:16px;--ww-r-xl:22px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--ww-font);background:var(--ww-espresso);color:var(--ww-parchment);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}a{text-decoration:none;color:inherit}button{cursor:pointer;font-family:inherit}
+.container{max-width:1100px;margin:0 auto;padding:0 28px}
+
+/* ── NAV — always dark walnut ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:900;height:var(--ww-nav-h);
+  background:rgba(26,17,12,.97);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(184,137,74,.13)}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 28px;height:100%;
+  display:flex;align-items:center;justify-content:space-between;gap:20px}
+.nav-logo{font-family:var(--ww-font-d);font-size:1.1rem;font-weight:800;color:var(--ww-parchment);
+  display:flex;align-items:center;gap:7px;white-space:nowrap}
+.nav-sep{opacity:.35;font-weight:300;font-family:var(--ww-font)}
+.nav-sub{font-weight:500;font-size:.88rem;font-family:var(--ww-font);color:var(--ww-brass);opacity:.9}
+.nav-links{display:flex;align-items:center;gap:2px;list-style:none}
+.nav-link{color:rgba(243,231,211,.62);font-size:.88rem;font-weight:500;
+  padding:7px 14px;border-radius:var(--ww-r-s);transition:color .2s,background .2s;white-space:nowrap}
+.nav-link:hover{color:var(--ww-parchment)}
+.nav-link.active{color:var(--ww-brass);font-weight:600}
+.ham{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:8px}
+.ham span{display:block;width:22px;height:2px;background:rgba(243,231,211,.7);border-radius:2px;transition:all .3s}
+.ham.open span:nth-child(1){transform:translateY(7px)rotate(45deg)}
+.ham.open span:nth-child(2){opacity:0}
+.ham.open span:nth-child(3){transform:translateY(-7px)rotate(-45deg)}
+.mob-menu{display:none;position:fixed;top:var(--ww-nav-h);left:0;right:0;
+  background:var(--ww-espresso);border-bottom:1px solid rgba(184,137,74,.12);
+  padding:16px 28px 28px;z-index:899;flex-direction:column;gap:4px}
+.mob-menu.open{display:flex}
+.mob-menu .nav-link{color:rgba(243,231,211,.75);font-size:1rem;padding:12px 0;
+  border-radius:0;border-bottom:1px solid rgba(184,137,74,.1)}
+.mob-menu .nav-link.active{color:var(--ww-brass)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:calc(var(--ww-nav-h) + 56px) 28px 100px;text-align:center;
+  position:relative;overflow:hidden;
+  background:
+    repeating-linear-gradient(92deg,transparent 0,transparent 18px,rgba(90,56,37,.055) 18px,rgba(90,56,37,.055) 19px),
+    radial-gradient(ellipse 130% 90% at 55% 25%,#3D2218 0%,var(--ww-espresso) 65%);
+}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:100px;
+  background:linear-gradient(transparent,var(--ww-walnut));pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:800px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;
+  background:rgba(184,137,74,.1);border:1px solid rgba(184,137,74,.28);
+  padding:6px 18px;border-radius:30px;font-size:.77rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ww-brass);margin-bottom:28px}
+.hero h1{font-family:var(--ww-font-d);font-size:clamp(2.8rem,6.5vw,5.5rem);
+  font-weight:900;letter-spacing:-.025em;line-height:1.04;color:var(--ww-parchment);margin-bottom:22px}
+.hero h1 .brass{color:var(--ww-brass)}
+.hero-sub{font-size:clamp(.95rem,1.8vw,1.1rem);color:var(--ww-muted-lt);
+  max-width:580px;margin:0 auto 44px;line-height:1.78}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.hero-scroll{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);
+  color:rgba(243,231,211,.22);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+  display:flex;flex-direction:column;align-items:center;gap:7px;animation:bob 2.4s infinite;z-index:1}
+@keyframes bob{0%,100%{transform:translateX(-50%)translateY(0)}50%{transform:translateX(-50%)translateY(7px)}}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:7px;
+  padding:12px 26px;border-radius:var(--ww-r-m);font-size:.9rem;font-weight:600;
+  border:none;cursor:pointer;transition:background .2s,transform .15s,box-shadow .2s;
+  text-decoration:none;white-space:nowrap;letter-spacing:.01em}
+.btn:hover{transform:translateY(-2px)}
+.btn-brass{background:var(--ww-brass);color:var(--ww-espresso);box-shadow:0 4px 18px rgba(184,137,74,.35)}
+.btn-brass:hover{background:#c99a55;box-shadow:0 8px 28px rgba(184,137,74,.45)}
+.btn-glass{background:rgba(243,231,211,.1);backdrop-filter:blur(8px);color:var(--ww-parchment);
+  border:1px solid rgba(243,231,211,.22)}
+.btn-glass:hover{background:rgba(243,231,211,.2)}
+.btn-outline-parchment{background:transparent;color:var(--ww-parchment);
+  border:1.5px solid rgba(243,231,211,.35)}
+.btn-outline-parchment:hover{background:rgba(243,231,211,.08)}
+.btn-outline-brass{background:transparent;color:var(--ww-brass);border:1.5px solid var(--ww-brass)}
+.btn-outline-brass:hover{background:var(--ww-brass);color:var(--ww-espresso)}
+.btn-dark{background:var(--ww-charcoal);color:var(--ww-parchment)}
+.btn-dark:hover{background:var(--ww-warm)}
+.btn-lg{padding:14px 32px;font-size:.97rem}
+.btn-sm{padding:9px 18px;font-size:.84rem}
+
+/* ── SECTION BASES ── */
+.sec{padding:88px 0}
+.sec-walnut{background:var(--ww-walnut)}
+.sec-espresso{background:var(--ww-espresso)}
+.sec-parchment{background:var(--ww-parchment)}
+.sec-cream{background:var(--ww-cream)}
+.ww-eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ww-brass);margin-bottom:10px}
+.ww-eyebrow.on-light{color:var(--ww-warm)}
+.ww-heading-lt{font-family:var(--ww-font-d);font-size:clamp(1.8rem,4vw,2.8rem);
+  font-weight:900;line-height:1.1;color:var(--ww-parchment);margin-bottom:14px}
+.ww-heading-dk{font-family:var(--ww-font-d);font-size:clamp(1.8rem,4vw,2.8rem);
+  font-weight:900;line-height:1.1;color:var(--ww-charcoal);margin-bottom:14px}
+.rule{width:44px;height:2px;background:var(--ww-brass);margin:0 0 24px}
+.rule.c{margin:0 auto 24px}
+.sub-lt{font-size:.97rem;color:var(--ww-muted-lt);line-height:1.78;max-width:560px;margin-bottom:52px}
+.sub-dk{font-size:.97rem;color:var(--ww-muted);line-height:1.78;max-width:560px;margin-bottom:52px}
+
+/* ── SERVICE CARDS ── */
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.svc-card{background:rgba(255,255,255,.045);border:1px solid rgba(184,137,74,.1);
+  border-top:2px solid var(--ww-brass);border-radius:var(--ww-r-l);
+  padding:28px 24px 32px;position:relative;
+  transition:transform .3s,background .3s,box-shadow .3s}
+.svc-card:hover{transform:translateY(-4px);background:rgba(255,255,255,.08);
+  box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.svc-card.featured{background:rgba(184,137,74,.08);border-color:rgba(184,137,74,.35);
+  border-top-color:#c99a55}
+.svc-badge{position:absolute;top:14px;right:14px;background:var(--ww-brass);color:var(--ww-espresso);
+  font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 10px;border-radius:20px}
+.svc-icon{font-size:2rem;margin-bottom:16px;display:block;line-height:1}
+.svc-title{font-family:var(--ww-font-d);font-size:1.12rem;font-weight:800;
+  color:var(--ww-parchment);margin-bottom:10px;line-height:1.3}
+.svc-desc{font-size:.87rem;color:var(--ww-muted-lt);line-height:1.72}
+
+/* ── PROJECT CARDS ── */
+.project-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.proj-card{background:#fff;border-radius:var(--ww-r-l);overflow:hidden;
+  box-shadow:var(--ww-sh-s);transition:transform .3s,box-shadow .3s}
+.proj-card:hover{transform:translateY(-4px);box-shadow:var(--ww-sh-l)}
+/* PROJECT IMAGE: Replace .proj-img div with <img src="..." alt="..." style="width:100%;height:200px;object-fit:cover"> */
+.proj-img{height:200px;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:8px;position:relative;overflow:hidden}
+.proj-img::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,.18));pointer-events:none}
+.pi-coffee{background:linear-gradient(135deg,#4A2A18,#2B1A12)}
+.pi-sign  {background:linear-gradient(135deg,#3D2A18,#5A3020)}
+.pi-cnc   {background:linear-gradient(135deg,#1A2A18,#2B3820)}
+.pi-epoxy {background:linear-gradient(135deg,#1A1F30,#2B1A22)}
+.pi-gift  {background:linear-gradient(135deg,#3A1A22,#2B1A12)}
+.pi-garage{background:linear-gradient(135deg,#1A1A2A,#2B2018)}
+.pi-topo  {background:linear-gradient(135deg,#2A2018,#1A2A1A)}
+.pi-family{background:linear-gradient(135deg,#3D2218,#2B1A0C)}
+.proj-img-icon{font-size:2rem;position:relative;z-index:1}
+.proj-img-lbl{font-size:.66rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.32);position:relative;z-index:1;text-align:center;padding:0 10px}
+.proj-body{padding:16px 18px 20px}
+.proj-cat{display:inline-block;background:rgba(184,137,74,.12);color:var(--ww-brass);
+  font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 10px;border-radius:20px;margin-bottom:9px}
+.proj-title{font-family:var(--ww-font-d);font-size:1rem;font-weight:700;
+  color:var(--ww-charcoal);margin-bottom:4px;line-height:1.3}
+.proj-material{font-size:.78rem;color:var(--ww-muted);margin-bottom:7px;font-style:italic}
+.proj-desc{font-size:.83rem;color:var(--ww-warm);line-height:1.6}
+
+/* ── COFFEE TABLE HIGHLIGHT ── */
+.ct-section{
+  padding:88px 0;
+  background:repeating-linear-gradient(92deg,transparent 0,transparent 18px,rgba(90,56,37,.04) 18px,rgba(90,56,37,.04) 19px),var(--ww-walnut)}
+.ct-inner{display:grid;grid-template-columns:1fr 380px;gap:64px;align-items:center}
+.ct-body p{font-size:.97rem;color:var(--ww-muted-lt);line-height:1.82;margin-bottom:28px}
+.ct-features{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:32px}
+.ct-feat{background:rgba(255,255,255,.05);border:1px solid rgba(184,137,74,.15);
+  border-radius:var(--ww-r-m);padding:13px 16px;display:flex;align-items:center;gap:10px}
+.ct-check{color:var(--ww-brass);font-weight:700;flex-shrink:0}
+.ct-feat-label{font-size:.86rem;font-weight:500;color:rgba(243,231,211,.82)}
+
+/* ── PROCESS STEPS ── */
+.process-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;position:relative;padding-top:8px}
+.process-grid::before{content:'';position:absolute;top:36px;
+  left:calc(12.5% + 22px);right:calc(12.5% + 22px);
+  height:1px;background:rgba(184,137,74,.3)}
+.process-step{text-align:center}
+.step-num{width:48px;height:48px;background:var(--ww-brass);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;
+  color:var(--ww-espresso);margin:0 auto 20px;position:relative;z-index:1;
+  box-shadow:0 2px 14px rgba(184,137,74,.42)}
+.step-title{font-family:var(--ww-font-d);font-size:1.05rem;font-weight:800;
+  color:var(--ww-charcoal);margin-bottom:8px;line-height:1.3}
+.step-desc{font-size:.87rem;color:var(--ww-muted);line-height:1.68}
+
+/* ── CONTACT CTA ── */
+.cta-section{background:var(--ww-espresso);padding:80px 0;text-align:center;
+  border-top:1px solid rgba(184,137,74,.1)}
+.cta-section h2{font-family:var(--ww-font-d);font-size:clamp(1.8rem,4vw,2.8rem);
+  font-weight:900;color:var(--ww-parchment);margin-bottom:14px;line-height:1.1}
+.cta-section p{font-size:.97rem;color:var(--ww-muted-lt);line-height:1.8;
+  max-width:520px;margin:0 auto 36px}
+.cta-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ── FOOTER ── */
+footer{background:#0f1117;border-top:1px solid rgba(255,255,255,.07);padding:48px 0 32px;text-align:center}
+.foot-logo{font-family:var(--ww-font-d);font-size:1.2rem;font-weight:900;color:#fff;margin-bottom:6px}
+.foot-sub{font-size:.85rem;color:rgba(255,255,255,.32);margin-bottom:22px}
+.foot-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;list-style:none;margin-bottom:28px}
+.foot-links a{font-size:.87rem;color:rgba(255,255,255,.45);transition:color .2s}
+.foot-links a:hover{color:rgba(255,255,255,.85)}
+.foot-copy{font-size:.77rem;color:rgba(255,255,255,.22)}
+
+/* ── ANIMATIONS ── */
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.fade-up.vis{opacity:1;transform:translateY(0)}
+.fade-up:nth-child(2){transition-delay:.08s}.fade-up:nth-child(3){transition-delay:.16s}
+.fade-up:nth-child(4){transition-delay:.24s}.fade-up:nth-child(5){transition-delay:.32s}
+.fade-up:nth-child(6){transition-delay:.40s}.fade-up:nth-child(7){transition-delay:.48s}
+
+/* ── RESPONSIVE ── */
+@media(min-width:769px){.svc-card:last-child{grid-column:2}}
+@media(max-width:960px){.project-grid{grid-template-columns:repeat(2,1fr)}.ct-inner{grid-template-columns:1fr;gap:40px}.process-grid{grid-template-columns:repeat(2,1fr)}.process-grid::before{display:none}}
+@media(max-width:768px){.svc-grid{grid-template-columns:repeat(2,1fr)}.ham{display:flex}.nav-links{display:none}.hero{min-height:90vh}}
+@media(max-width:600px){.svc-grid{grid-template-columns:1fr}.project-grid{grid-template-columns:1fr}.ct-features{grid-template-columns:1fr}.process-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.container{padding:0 20px}.sec,.ct-section,.cta-section{padding:64px 0}.hero h1{font-size:2.4rem}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      Pickett Dynamics <span class="nav-sep">/</span> <span class="nav-sub">Woodworking</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="woodworking-gallery.html" class="nav-link">Gallery</a></li>
+      <li><a href="woodworking-custom-coffee-tables.html" class="nav-link">Coffee Tables</a></li>
+      <li><a href="woodworking-custom-work.html" class="nav-link">Custom Work</a></li>
+      <li><a href="woodworking-sign-designer.html" class="nav-link">Sign Designer</a></li>
+      <li><a href="woodworking-contact.html" class="nav-link">Contact</a></li>
+    </ul>
+    <button class="ham" id="ham" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mob-menu" id="mobMenu">
+  <a href="woodworking-gallery.html" class="nav-link">Gallery</a>
+  <a href="woodworking-custom-coffee-tables.html" class="nav-link">Coffee Tables</a>
+  <a href="woodworking-custom-work.html" class="nav-link">Custom Work</a>
+  <a href="woodworking-sign-designer.html" class="nav-link">Sign Designer</a>
+  <a href="woodworking-contact.html" class="nav-link">Contact</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🪵 Pickett Dynamics &nbsp;·&nbsp; Custom Woodworking</div>
+    <h1>Custom Woodworking<br><span class="brass">&amp;</span> CNC-Crafted Pieces</h1>
+    <p class="hero-sub">Premium handcrafted pieces with a rich, natural feel — from personalized signs and CNC-carved panels to epoxy inlays, custom coffee tables, and one-of-a-kind gifts.</p>
+    <div class="hero-ctas">
+      <a href="woodworking-gallery.html" class="btn btn-brass btn-lg">View Gallery</a>
+      <a href="woodworking-custom-coffee-tables.html" class="btn btn-glass btn-lg">Custom Coffee Tables</a>
+      <a href="woodworking-custom-work.html" class="btn btn-outline-parchment btn-lg">Request a Custom Project</a>
+    </div>
+  </div>
+  <div class="hero-scroll" aria-hidden="true">
+    <span>Explore the workshop</span>
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<!-- WHAT WE MAKE -->
+<section class="sec sec-walnut">
+  <div class="container">
+    <p class="ww-eyebrow fade-up" style="text-align:center">Our Craft</p>
+    <h2 class="ww-heading-lt fade-up" style="text-align:center">What We Make</h2>
+    <div class="rule c fade-up"></div>
+    <p class="sub-lt fade-up" style="margin:0 auto 52px;text-align:center">We create custom woodworking and CNC-crafted pieces for homes, lake houses, garages, offices, gifts, and special occasions. Each piece is designed around the customer's idea, material preferences, size, and finish style — from personalized signs and carved panels to custom coffee tables and statement pieces.</p>
+
+    <div class="svc-grid">
+      <div class="svc-card fade-up">
+        <span class="svc-icon" aria-hidden="true">🪧</span>
+        <h3 class="svc-title">Custom Signs</h3>
+        <p class="svc-desc">Personalized family signs, lake house signs, business signs, team signs, and decorative wall pieces.</p>
+      </div>
+      <div class="svc-card fade-up">
+        <span class="svc-icon" aria-hidden="true">🌲</span>
+        <h3 class="svc-title">CNC Carvings &amp; Relief Work</h3>
+        <p class="svc-desc">Detailed CNC-carved designs, 3D relief carvings, topographic-style pieces, wildlife designs, mountain scenes, and custom artwork.</p>
+      </div>
+      <div class="svc-card fade-up">
+        <span class="svc-icon" aria-hidden="true">✨</span>
+        <h3 class="svc-title">Epoxy &amp; Inlay Projects</h3>
+        <p class="svc-desc">Epoxy-filled designs, color accents, river-style details, engraved fills, and contrasting wood inlays.</p>
+      </div>
+      <div class="svc-card featured fade-up">
+        <span class="svc-badge">Popular</span>
+        <span class="svc-icon" aria-hidden="true">☕</span>
+        <h3 class="svc-title">Custom Coffee Tables</h3>
+        <p class="svc-desc">Custom coffee tables designed around the room, wood species, size, leg style, epoxy accents, and finish preference.</p>
+      </div>
+      <div class="svc-card fade-up">
+        <span class="svc-icon" aria-hidden="true">🎁</span>
+        <h3 class="svc-title">Personalized Gifts</h3>
+        <p class="svc-desc">Custom coasters, ornaments, pendants, plaques, cutting-board-style pieces, and one-of-a-kind handmade gifts.</p>
+      </div>
+      <div class="svc-card fade-up">
+        <span class="svc-icon" aria-hidden="true">🔧</span>
+        <h3 class="svc-title">Garage, Car &amp; Hobby Pieces</h3>
+        <p class="svc-desc">Custom garage signs, car-themed plaques, shop signs, and personalized pieces for automotive, fishing, sports, or hobby spaces.</p>
+      </div>
+      <div class="svc-card fade-up">
+        <span class="svc-icon" aria-hidden="true">🪑</span>
+        <h3 class="svc-title">Small Furniture &amp; Specialty Builds</h3>
+        <p class="svc-desc">Select custom furniture, table accents, decorative panels, and specialty woodworking projects depending on scope and availability.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED WORK -->
+<section class="sec sec-cream">
+  <div class="container">
+    <p class="ww-eyebrow on-light fade-up">Recent Projects</p>
+    <h2 class="ww-heading-dk fade-up">Featured Work</h2>
+    <div class="rule fade-up"></div>
+    <p class="sub-dk fade-up">A sample of completed work across categories. Each project is custom — materials, sizing, and finish vary by order.</p>
+
+    <div class="project-grid">
+      <div class="proj-card fade-up">
+        <img src="assets/images/woodworking/IMG_0587.JPG" alt="Custom walnut coffee table" style="width:100%;height:200px;object-fit:cover">
+        <div class="proj-body">
+          <span class="proj-cat">Coffee Tables</span>
+          <h3 class="proj-title">Custom Walnut Coffee Table</h3>
+          <p class="proj-material">Walnut · protective clear finish</p>
+          <p class="proj-desc">Handcrafted coffee table with premium hardwood, custom sizing, and optional epoxy or metal accents.</p>
+        </div>
+      </div>
+
+      <div class="proj-card fade-up">
+        <img src="assets/images/woodworking/IMG_0302.JPEG" alt="Epoxy river coffee table" style="width:100%;height:200px;object-fit:cover">
+        <div class="proj-body">
+          <span class="proj-cat">Coffee Tables</span>
+          <h3 class="proj-title">Epoxy River Coffee Table</h3>
+          <p class="proj-material">Walnut slab · epoxy accent</p>
+          <p class="proj-desc">Custom table concept using walnut slabs and a dramatic epoxy channel or accent fill.</p>
+        </div>
+      </div>
+
+      <div class="proj-card fade-up">
+        <img src="assets/images/woodworking/IMG_2863.JPG" alt="Custom lake house sign" style="width:100%;height:200px;object-fit:cover">
+        <div class="proj-body">
+          <span class="proj-cat">Signs</span>
+          <h3 class="proj-title">Custom Lake House Sign</h3>
+          <p class="proj-material">Walnut · painted fill · outdoor finish</p>
+          <p class="proj-desc">Carved and finished wood sign for a cabin, lake property, or home entrance.</p>
+        </div>
+      </div>
+
+      <div class="proj-card fade-up">
+        <img src="assets/images/woodworking/IMG_0159.png" alt="Tree of life CNC carving" style="width:100%;height:200px;object-fit:cover">
+        <div class="proj-body">
+          <span class="proj-cat">CNC Carvings</span>
+          <h3 class="proj-title">Tree of Life Carving</h3>
+          <p class="proj-material">Hardwood panel</p>
+          <p class="proj-desc">CNC-carved decorative piece with layered relief detail and natural wood finish.</p>
+        </div>
+      </div>
+
+      <div class="proj-card fade-up">
+        <img src="assets/images/woodworking/IMG_0246.png" alt="Personalized epoxy inlay coasters" style="width:100%;height:200px;object-fit:cover">
+        <div class="proj-body">
+          <span class="proj-cat">Gifts</span>
+          <h3 class="proj-title">Epoxy Inlay Coasters</h3>
+          <p class="proj-material">Hardwood · epoxy color fill</p>
+          <p class="proj-desc">Personalized coasters with custom epoxy color fill, engravings, or initials.</p>
+        </div>
+      </div>
+
+      <div class="proj-card fade-up">
+        <img src="assets/images/woodworking/IMG_0565.png" alt="Garage sign or car-themed plaque" style="width:100%;height:200px;object-fit:cover">
+        <div class="proj-body">
+          <span class="proj-cat">Garage &amp; Hobby</span>
+          <h3 class="proj-title">Garage / Car-Themed Plaque</h3>
+          <p class="proj-material">Carved wood · painted accents</p>
+          <p class="proj-desc">Custom garage sign or automotive-themed wall piece for the shop or man cave.</p>
+        </div>
+      </div>
+
+      <div class="proj-card fade-up">
+        <img src="assets/images/woodworking/IMG_0395.JPG" alt="Topographic wood inlay piece" style="width:100%;height:200px;object-fit:cover">
+        <div class="proj-body">
+          <span class="proj-cat">Epoxy &amp; Inlay</span>
+          <h3 class="proj-title">Topographic Wood Inlay</h3>
+          <p class="proj-material">White oak and walnut contrast</p>
+          <p class="proj-desc">Contour-style CNC design using contrasting wood species for a layered, map-like effect.</p>
+        </div>
+      </div>
+
+      <div class="proj-card fade-up">
+        <img src="assets/images/woodworking/IMG_0158.png" alt="Family name sign" style="width:100%;height:200px;object-fit:cover">
+        <div class="proj-body">
+          <span class="proj-cat">Signs</span>
+          <h3 class="proj-title">Family Name Sign</h3>
+          <p class="proj-material">Walnut · white oak · painted fill</p>
+          <p class="proj-desc">Personalized sign for home, camp, cabin, or as a thoughtful handmade gift.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:44px">
+      <a href="woodworking-gallery.html" class="btn btn-dark">View Full Gallery →</a>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO: IN THE WORKSHOP -->
+<section class="sec sec-espresso" style="padding:72px 0;border-top:1px solid rgba(184,137,74,.1);border-bottom:1px solid rgba(184,137,74,.1)">
+  <div class="container" style="text-align:center">
+    <p class="ww-eyebrow fade-up" style="text-align:center">The Craft</p>
+    <h2 class="ww-heading-lt fade-up" style="text-align:center">In the Workshop</h2>
+    <div class="rule c fade-up"></div>
+    <p class="sub-lt fade-up" style="margin:0 auto 40px;text-align:center">Watching epoxy settle into a walnut slab — one of the more satisfying parts of building a custom coffee table.</p>
+    <div class="fade-up">
+      <video autoplay muted loop playsinline controls
+        style="max-width:720px;width:100%;border-radius:var(--ww-r-xl);box-shadow:0 8px 48px rgba(0,0,0,.55);display:block;margin:0 auto">
+        <source src="assets/images/woodworking/EPOXY_POUR.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</section>
+
+<!-- COFFEE TABLE HIGHLIGHT -->
+<section class="ct-section">
+  <div class="container">
+    <div class="ct-inner">
+      <div class="ct-body fade-up">
+        <p class="ww-eyebrow">Featured</p>
+        <h2 class="ww-heading-lt">Custom Coffee Tables</h2>
+        <div class="rule"></div>
+        <p>A custom coffee table can become the centerpiece of a room. We can design tables around your space, preferred wood species, size, finish, leg style, and optional epoxy or inlay details. Whether you want a clean modern walnut table, a rustic slab-style piece, or a more artistic epoxy-accented design, the project starts with your room and your vision.</p>
+        <a href="woodworking-custom-coffee-tables.html" class="btn btn-brass">Explore Custom Coffee Tables</a>
+      </div>
+      <div class="fade-up">
+        <div class="ct-features">
+          <div class="ct-feat"><span class="ct-check">✓</span><span class="ct-feat-label">Walnut and hardwood options</span></div>
+          <div class="ct-feat"><span class="ct-check">✓</span><span class="ct-feat-label">Custom dimensions</span></div>
+          <div class="ct-feat"><span class="ct-check">✓</span><span class="ct-feat-label">Epoxy accents available</span></div>
+          <div class="ct-feat"><span class="ct-check">✓</span><span class="ct-feat-label">Metal or wood leg options</span></div>
+          <div class="ct-feat"><span class="ct-check">✓</span><span class="ct-feat-label">Clear protective finish</span></div>
+          <div class="ct-feat"><span class="ct-check">✓</span><span class="ct-feat-label">Built around your space</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="sec sec-parchment">
+  <div class="container">
+    <p class="ww-eyebrow on-light fade-up" style="text-align:center">The Process</p>
+    <h2 class="ww-heading-dk fade-up" style="text-align:center">How Custom Projects Work</h2>
+    <div class="rule c fade-up" style="margin-bottom:52px"></div>
+
+    <div class="process-grid">
+      <div class="process-step fade-up">
+        <div class="step-num" aria-hidden="true">1</div>
+        <h3 class="step-title">Share Your Idea</h3>
+        <p class="step-desc">Tell us what you want made — size, style, wording, theme, material preference, and where it will be used.</p>
+      </div>
+      <div class="process-step fade-up">
+        <div class="step-num" aria-hidden="true">2</div>
+        <h3 class="step-title">Design Review</h3>
+        <p class="step-desc">We'll review the idea, discuss materials and design direction, and confirm whether the project is a good fit.</p>
+      </div>
+      <div class="process-step fade-up">
+        <div class="step-num" aria-hidden="true">3</div>
+        <h3 class="step-title">Build &amp; Finish</h3>
+        <p class="step-desc">Once approved, the piece is cut, carved, sanded, finished, and prepared for pickup or delivery.</p>
+      </div>
+      <div class="process-step fade-up">
+        <div class="step-num" aria-hidden="true">4</div>
+        <h3 class="step-title">Pickup or Delivery</h3>
+        <p class="step-desc">We'll coordinate pickup, local delivery, or shipping depending on the project size and location.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT CTA -->
+<section class="cta-section">
+  <div class="container">
+    <p class="ww-eyebrow fade-up" style="text-align:center">Get Started</p>
+    <h2 class="fade-up">Have an idea for a custom piece?</h2>
+    <p class="fade-up">Send a message with your concept, approximate size, preferred material, deadline, and any reference photos. Most projects start with a rough idea — you don't need to have everything figured out.</p>
+    <div class="cta-buttons fade-up">
+      <a href="woodworking-custom-work.html" class="btn btn-brass btn-lg">Start a Custom Request</a>
+      <!-- TODO: Update with your woodworking contact email -->
+      <a href="mailto:matt@pickettdynamics.com?subject=Custom Woodworking Inquiry" class="btn btn-outline-parchment btn-lg">Email Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">Pickett Dynamics</div>
+  <p class="foot-sub">A portfolio of ventures by Pickett Enterprises LLC</p>
+  <ul class="foot-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="HookedOnFishing/index.html">Hooked on Fishing</a></li>
+    <li><a href="rentals.html">Rentals</a></li>
+    <li><a href="woodworking.html">Woodworking</a></li>
+    <li><a href="mailto:contact@pickettdynamics.com">Contact</a></li>
+  </ul>
+  <p class="foot-copy">&copy; 2026 Pickett Enterprises LLC &nbsp;·&nbsp; Pickett Dynamics &nbsp;·&nbsp; All rights reserved.</p>
+</footer>
+
+<script>
+(function(){
+  const ham = document.getElementById('ham');
+  const mob = document.getElementById('mobMenu');
+  ham.addEventListener('click', () => { ham.classList.toggle('open'); mob.classList.toggle('open'); });
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, {threshold: .1, rootMargin: '0px 0px -30px 0px'});
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+})();
+</script>
+</body>
+</html>

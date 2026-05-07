@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laconia, NH Rental — Pickett Dynamics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0f1117;--ink-lt:#1e2330;
+  --accent:#3a6b8a;--accent-lt:#e8f2f8;
+  --sand:#d9c9a8;--cream:#f5f1ea;--sand-lt:#faf6ed;--muted:#6b7c74;
+  --charcoal:#1f2421;--forest:#2d4a3e;--white:#ffffff;
+  --sh-s:0 2px 8px rgba(31,36,33,.08);--sh-m:0 4px 20px rgba(31,36,33,.13);--sh-l:0 8px 40px rgba(31,36,33,.2);
+  --r-s:8px;--r-m:12px;--r-l:16px;--r-xl:24px;
+  --font:Inter,system-ui,sans-serif;--font-d:'Playfair Display',Georgia,serif;
+  --nav-h:68px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font);background:var(--cream);color:var(--charcoal);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:inherit}
+.container{max-width:1100px;margin:0 auto;padding:0 28px}
+
+/* ── NAV ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:900;height:var(--nav-h);
+  background:rgba(245,241,234,.88);backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(45,74,62,.07);transition:background .3s,box-shadow .3s}
+.nav.scrolled{background:rgba(31,36,33,.93);box-shadow:var(--sh-m)}
+.nav.scrolled .nav-logo,.nav.scrolled .nav-link{color:#fff}
+.nav.scrolled .nav-link:hover{color:var(--sand)}
+.nav.scrolled .ham span{background:#fff}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 28px;height:100%;
+  display:flex;align-items:center;justify-content:space-between;gap:20px}
+.nav-logo{font-family:var(--font-d);font-size:1.1rem;font-weight:800;color:var(--charcoal);
+  display:flex;align-items:center;gap:7px;white-space:nowrap}
+.nav-sep{opacity:.35;font-weight:300;font-family:var(--font);font-size:1rem}
+.nav-sub{font-weight:500;font-size:.88rem;font-family:var(--font);opacity:.65}
+.nav-links{display:flex;align-items:center;gap:2px;list-style:none}
+.nav-link{color:var(--charcoal);font-size:.88rem;font-weight:500;
+  padding:7px 14px;border-radius:6px;transition:color .2s,background .2s;white-space:nowrap}
+.nav-link:hover{color:var(--accent)}
+.nav-link.active{color:var(--accent);font-weight:600}
+.ham{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:8px}
+.ham span{display:block;width:22px;height:2px;background:var(--charcoal);border-radius:2px;transition:all .3s}
+.ham.open span:nth-child(1){transform:translateY(7px)rotate(45deg)}
+.ham.open span:nth-child(2){opacity:0}
+.ham.open span:nth-child(3){transform:translateY(-7px)rotate(-45deg)}
+.mob-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;
+  background:var(--charcoal);padding:16px 28px 28px;z-index:899;flex-direction:column;gap:4px}
+.mob-menu.open{display:flex}
+.mob-menu .nav-link{color:rgba(255,255,255,.82);font-size:1rem;padding:12px 0;
+  border-radius:0;border-bottom:1px solid rgba(255,255,255,.08)}
+.mob-menu .nav-link.active{color:var(--sand)}
+
+/* ── BREADCRUMB ── */
+.breadcrumb{
+  margin-top:var(--nav-h);padding:14px 0;
+  background:var(--cream);border-bottom:1px solid rgba(45,74,62,.08);
+}
+.breadcrumb a{
+  font-size:.88rem;font-weight:600;color:var(--accent);
+  display:inline-flex;align-items:center;gap:5px;transition:gap .2s;
+}
+.breadcrumb a:hover{gap:8px}
+
+/* ── HERO ── */
+.hero{
+  position:relative;height:88vh;min-height:540px;
+  display:flex;align-items:flex-end;justify-content:center;overflow:hidden;
+}
+/*
+  HERO PHOTO: To add a real background photo, replace the .hero-bg gradient below with:
+  background: url('path/to/laconia-exterior.jpg') center/cover no-repeat;
+  You can also remove the transition/transform if you don't want the subtle zoom effect.
+*/
+.hero-bg{
+  position:absolute;inset:0;
+  background:url('assets/images/rentals/Laconia Exterior.jpg') center/cover no-repeat;
+  transform:scale(1.04);transition:transform 9s ease;
+}
+.hero-bg.loaded{transform:scale(1)}
+.hero-ovl{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.75) 0%,rgba(0,0,0,.18) 55%,transparent 100%);
+}
+.hero-content{
+  position:relative;z-index:2;text-align:center;
+  padding:0 28px 64px;max-width:860px;width:100%;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  padding:5px 14px;border-radius:24px;font-size:.76rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.8);
+  margin-bottom:18px;
+}
+.hero h1{
+  font-family:var(--font-d);font-size:clamp(2.4rem,6vw,4.8rem);
+  font-weight:900;color:#fff;letter-spacing:-.025em;line-height:1.06;
+  margin-bottom:16px;text-shadow:0 2px 24px rgba(0,0,0,.4);
+}
+.hero-sub{
+  font-size:clamp(.9rem,1.8vw,1.08rem);color:rgba(255,255,255,.82);
+  line-height:1.75;max-width:640px;margin:0 auto 30px;
+}
+.hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:12px 24px;border-radius:var(--r-m);font-size:.9rem;font-weight:600;
+  border:none;cursor:pointer;transition:background .2s,transform .15s,box-shadow .2s;
+  text-decoration:none;white-space:nowrap;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-hero-p{background:var(--accent);color:#fff;box-shadow:0 4px 18px rgba(58,107,138,.4)}
+.btn-hero-p:hover{background:#4a85ab;box-shadow:0 8px 24px rgba(58,107,138,.5)}
+.btn-hero-s{background:rgba(255,255,255,.14);backdrop-filter:blur(8px);
+  border:1.5px solid rgba(255,255,255,.45);color:#fff}
+.btn-hero-s:hover{background:rgba(255,255,255,.24)}
+.btn-airbnb{background:#ff5a5f;color:#fff}
+.btn-airbnb:hover{background:#e04347}
+.btn-outline-white{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.5)}
+.btn-outline-white:hover{background:rgba(255,255,255,.1)}
+.btn-lg{padding:14px 30px;font-size:.97rem}
+
+/* ── PHOTO STRIP ── */
+.photo-strip{background:var(--charcoal)}
+.photo-grid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:280px;gap:3px}
+.photo-item{
+  overflow:hidden;position:relative;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;
+}
+/*
+  PHOTO PLACEHOLDERS: Replace each .photo-item div contents with a real <img> tag.
+  Use style="width:100%;height:100%;object-fit:cover" on each <img>.
+*/
+.photo-nh-1{background:linear-gradient(135deg,#1e3040 0%,#2d4a60 100%)}  /* Laconia living room / interior */
+.photo-nh-2{background:linear-gradient(135deg,#1a2a3a 0%,#243850 100%)}  /* Laconia private beach / lake */
+.photo-nh-3{background:linear-gradient(135deg,#2a3a2a 0%,#1e3030 100%)}  /* Laconia exterior / yard */
+.photo-placeholder-icon{font-size:1.8rem;position:relative;z-index:1}
+.photo-placeholder-label{font-size:.7rem;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:rgba(255,255,255,.32);position:relative;z-index:1;
+  text-align:center;padding:0 12px}
+
+/* ── SECTION BASE ── */
+.section{padding:72px 0}
+.section.bg-white{background:var(--white)}
+.section.bg-cream{background:var(--cream)}
+.section.bg-sand{background:var(--sand-lt)}
+.sec-eyebrow{font-size:.76rem;font-weight:700;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.sec-heading{font-family:var(--font-d);font-size:clamp(1.6rem,4vw,2.4rem);
+  font-weight:900;line-height:1.1;margin-bottom:18px}
+.sec-sub{font-size:.97rem;color:var(--muted);line-height:1.75;max-width:580px;margin-bottom:40px}
+.body-text{font-size:.97rem;color:#3a4840;line-height:1.85;margin-bottom:14px}
+.body-text:last-child{margin-bottom:0}
+
+/* ── OVERVIEW ── */
+.overview-grid{display:grid;grid-template-columns:1fr 300px;gap:56px;align-items:start}
+.quick-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.qs-item{background:var(--sand-lt);border:1px solid rgba(217,201,168,.55);
+  border-radius:var(--r-l);padding:22px 16px;text-align:center}
+.qs-val{font-family:var(--font-d);font-size:2.2rem;font-weight:900;
+  color:var(--charcoal);line-height:1;margin-bottom:4px}
+.qs-label{font-size:.76rem;font-weight:600;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--muted)}
+
+/* ── HIGHLIGHTS GRID ── */
+.highlights-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.hl-card{background:var(--white);border-radius:var(--r-l);padding:22px 18px;
+  box-shadow:var(--sh-s);text-align:center;transition:transform .25s,box-shadow .25s}
+.hl-card:hover{transform:translateY(-3px);box-shadow:var(--sh-m)}
+.hl-icon{font-size:1.8rem;margin-bottom:10px;display:block;line-height:1}
+.hl-label{font-size:.85rem;font-weight:600;color:var(--charcoal);line-height:1.35}
+
+/* ── AMENITIES ── */
+.amenities-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.am-item{display:flex;align-items:flex-start;gap:12px;
+  background:var(--cream);border-radius:var(--r-m);padding:16px 18px}
+.am-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px}
+.am-label{font-size:.88rem;font-weight:600;color:var(--charcoal);line-height:1.4}
+
+/* ── NEARBY ── */
+.nearby-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.nearby-card{
+  background:var(--white);border-radius:var(--r-m);padding:18px 20px;
+  border-left:3px solid var(--accent);box-shadow:var(--sh-s);
+  display:flex;align-items:flex-start;gap:14px;
+}
+.nearby-icon{font-size:1.4rem;flex-shrink:0;margin-top:2px}
+.nearby-name{font-size:.9rem;font-weight:700;color:var(--charcoal);
+  margin-bottom:3px;line-height:1.3;display:block}
+.nearby-desc{font-size:.83rem;color:var(--muted);line-height:1.55}
+
+/* ── GOOD FOR ── */
+.goodfor-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}
+.tag{
+  background:var(--white);border:1.5px solid rgba(217,201,168,.9);
+  border-radius:30px;padding:8px 20px;font-size:.88rem;font-weight:600;
+  color:var(--charcoal);transition:background .2s,border-color .2s,color .2s;cursor:default;
+}
+.tag:hover{background:var(--accent);color:var(--white);border-color:var(--accent)}
+
+/* ── BOOKING CTA ── */
+.booking-cta{
+  background:var(--ink);padding:80px 0;text-align:center;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.booking-eyebrow{font-size:.76rem;font-weight:700;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--sand);margin-bottom:12px}
+.booking-cta h2{
+  font-family:var(--font-d);font-size:clamp(1.8rem,4vw,2.8rem);
+  font-weight:900;color:var(--white);margin-bottom:16px;line-height:1.1;
+}
+.booking-cta p{font-size:.97rem;color:rgba(255,255,255,.55);
+  line-height:1.8;max-width:520px;margin:0 auto 36px}
+.cta-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ── NEARBY LINKS ── */
+a.nearby-card{color:inherit;text-decoration:none;transition:transform .2s,box-shadow .2s}
+a.nearby-card:hover{transform:translateY(-2px);box-shadow:var(--sh-m)}
+
+/* ── FROM THE LOCALS ── */
+.local-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.local-card{background:var(--white);border-radius:var(--r-l);padding:20px 22px;
+  box-shadow:var(--sh-s);display:flex;align-items:flex-start;gap:14px}
+a.local-card{color:inherit;text-decoration:none;transition:transform .2s,box-shadow .2s}
+a.local-card:hover{transform:translateY(-2px);box-shadow:var(--sh-m)}
+.local-emoji{font-size:1.8rem;flex-shrink:0;line-height:1;margin-top:2px}
+.local-name{font-size:.93rem;font-weight:700;color:var(--charcoal);margin-bottom:4px}
+.local-desc{font-size:.85rem;color:var(--muted);line-height:1.58}
+.local-tag{display:inline-block;margin-top:8px;font-size:.7rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-lt);padding:2px 9px;border-radius:5px}
+.local-tag.tip{background:#fef6e4;color:#9c6e00}
+@media(max-width:600px){.local-grid{grid-template-columns:1fr}}
+
+/* ── FOOTER ── */
+footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.07);
+  padding:48px 0 32px;text-align:center}
+.foot-logo{font-family:var(--font-d);font-size:1.2rem;font-weight:900;color:var(--white);margin-bottom:6px}
+.foot-sub{font-size:.85rem;color:rgba(255,255,255,.32);margin-bottom:22px}
+.foot-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;list-style:none;margin-bottom:28px}
+.foot-links a{font-size:.87rem;color:rgba(255,255,255,.45);transition:color .2s}
+.foot-links a:hover{color:rgba(255,255,255,.85)}
+.foot-copy{font-size:.77rem;color:rgba(255,255,255,.22)}
+
+/* ── ANIMATIONS ── */
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.fade-up.vis{opacity:1;transform:translateY(0)}
+.fade-up:nth-child(2){transition-delay:.1s}
+.fade-up:nth-child(3){transition-delay:.2s}
+.fade-up:nth-child(4){transition-delay:.3s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .overview-grid{grid-template-columns:1fr;gap:36px}
+  .quick-stats{grid-template-columns:repeat(4,1fr)}
+  .highlights-grid{grid-template-columns:repeat(4,1fr)}
+  .photo-grid{grid-template-columns:1fr 1fr;grid-template-rows:200px 200px}
+  .photo-item:first-child{grid-column:1/3}
+}
+@media(max-width:768px){
+  .highlights-grid{grid-template-columns:repeat(2,1fr)}
+  .amenities-grid{grid-template-columns:repeat(2,1fr)}
+  .hero{height:80vh}
+  .ham{display:flex}
+  .nav-links{display:none}
+}
+@media(max-width:600px){
+  .nearby-grid{grid-template-columns:1fr}
+  .amenities-grid{grid-template-columns:1fr}
+  .quick-stats{grid-template-columns:repeat(2,1fr)}
+  .photo-grid{grid-template-columns:1fr;grid-template-rows:220px 180px 180px}
+  .photo-item:first-child{grid-column:auto}
+}
+@media(max-width:480px){
+  .container{padding:0 20px}
+  .section{padding:56px 0}
+  .highlights-grid{grid-template-columns:repeat(2,1fr)}
+  .hero h1{font-size:2.4rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      Pickett Dynamics
+      <span class="nav-sep">/</span>
+      <span class="nav-sub">Rentals</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="HookedOnFishing/index.html" class="nav-link">Hooked on Fishing</a></li>
+      <li><a href="rentals.html" class="nav-link active">Rentals</a></li>
+      <li><a href="mailto:contact@pickettdynamics.com" class="nav-link">Contact</a></li>
+    </ul>
+    <button class="ham" id="ham" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mob-menu" id="mobMenu">
+  <a href="HookedOnFishing/index.html" class="nav-link">Hooked on Fishing</a>
+  <a href="rentals.html" class="nav-link active">Rentals</a>
+  <a href="mailto:contact@pickettdynamics.com" class="nav-link">Contact</a>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="container">
+    <a href="rentals.html">← Back to Rentals</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-ovl"></div>
+  <div class="hero-content">
+    <div class="hero-badge">🏡 Laconia, NH &nbsp;·&nbsp; Lakes Region</div>
+    <h1>Laconia, New Hampshire Rental</h1>
+    <p class="hero-sub">All-season Lakes Region home near Lake Winnipesaukee, with private community beach access and easy access to Weirs Beach.</p>
+    <div class="hero-ctas">
+      <a href="https://www.airbnb.com/rooms/907383963854624838?guests=1&adults=1&s=67&unique_share_id=c62f3897-bec9-4ceb-b97c-7b4112a9017c"
+         target="_blank" rel="noopener noreferrer" class="btn btn-hero-p btn-lg">View on Airbnb ↗</a>
+      <!-- TODO: Update mailto to your preferred rentals contact email -->
+      <a href="mailto:matt@pickettdynamics.com?subject=Private Rental Inquiry – Laconia, NH"
+         class="btn btn-hero-s btn-lg">Ask About Private Rental</a>
+    </div>
+  </div>
+</section>
+
+<!-- PHOTO STRIP -->
+<div class="photo-strip">
+  <div class="photo-grid">
+    <div class="photo-item">
+      <img src="assets/images/rentals/Laconia interior.jpg" alt="Laconia rental living room" style="width:100%;height:100%;object-fit:cover">
+    </div>
+    <div class="photo-item">
+      <img src="assets/images/rentals/Laconia bedroom2.jpg" alt="Laconia rental bedroom" style="width:100%;height:100%;object-fit:cover">
+    </div>
+    <div class="photo-item">
+      <img src="assets/images/rentals/Laconia Backyark.jpg" alt="Laconia rental backyard" style="width:100%;height:100%;object-fit:cover">
+    </div>
+  </div>
+</div>
+
+<!-- OVERVIEW -->
+<section class="section bg-white">
+  <div class="container">
+    <div class="overview-grid fade-up">
+      <div>
+        <p class="sec-eyebrow">About This Property</p>
+        <h2 class="sec-heading">Overview</h2>
+        <p class="body-text">Our Laconia rental is an all-season Lakes Region getaway near Lake Winnipesaukee. The home sleeps up to 8 guests with 3 bedrooms, 6 beds, and 3 bathrooms, making it a strong fit for families, couples, or groups looking for lake access, nearby attractions, and a comfortable home base.</p>
+        <p class="body-text">Guests have access to a private community beach, and the house is less than 1 mile from Weirs Beach. Whether you're visiting in summer for the lake and boardwalk, fall for the foliage, or winter for Gunstock, this is a year-round home base for the Lakes Region.</p>
+      </div>
+      <div class="quick-stats">
+        <div class="qs-item">
+          <div class="qs-val">8</div>
+          <div class="qs-label">Guests</div>
+        </div>
+        <div class="qs-item">
+          <div class="qs-val">3</div>
+          <div class="qs-label">Bedrooms</div>
+        </div>
+        <div class="qs-item">
+          <div class="qs-val">6</div>
+          <div class="qs-label">Beds</div>
+        </div>
+        <div class="qs-item">
+          <div class="qs-val">3</div>
+          <div class="qs-label">Bathrooms</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROPERTY HIGHLIGHTS -->
+<section class="section bg-sand">
+  <div class="container">
+    <p class="sec-eyebrow fade-up">What You Get</p>
+    <h2 class="sec-heading fade-up">Property Highlights</h2>
+    <div class="highlights-grid">
+      <div class="hl-card fade-up">
+        <span class="hl-icon">👥</span>
+        <div class="hl-label">Sleeps up to 8 guests</div>
+      </div>
+      <div class="hl-card fade-up">
+        <span class="hl-icon">🛏️</span>
+        <div class="hl-label">3 bedrooms</div>
+      </div>
+      <div class="hl-card fade-up">
+        <span class="hl-icon">🛌</span>
+        <div class="hl-label">6 beds</div>
+      </div>
+      <div class="hl-card fade-up">
+        <span class="hl-icon">🚿</span>
+        <div class="hl-label">3 bathrooms</div>
+      </div>
+      <div class="hl-card fade-up">
+        <span class="hl-icon">🏖️</span>
+        <div class="hl-label">Private community beach access</div>
+      </div>
+      <div class="hl-card fade-up">
+        <span class="hl-icon">📍</span>
+        <div class="hl-label">Less than 1 mile from Weirs Beach</div>
+      </div>
+      <div class="hl-card fade-up">
+        <span class="hl-icon">🔐</span>
+        <div class="hl-label">Self check-in with smart lock</div>
+      </div>
+      <div class="hl-card fade-up">
+        <span class="hl-icon">🌨️</span>
+        <div class="hl-label">All-season location</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AT THE HOUSE -->
+<section class="section bg-white">
+  <div class="container">
+    <p class="sec-eyebrow fade-up">Amenities</p>
+    <h2 class="sec-heading fade-up">At the House</h2>
+    <div class="amenities-grid">
+      <div class="am-item fade-up">
+        <div class="am-icon">🏖️</div>
+        <div class="am-label">Private community beach access</div>
+      </div>
+      <div class="am-item fade-up">
+        <div class="am-icon">⚽</div>
+        <div class="am-label">Foosball table</div>
+      </div>
+      <div class="am-item fade-up">
+        <div class="am-icon">🎮</div>
+        <div class="am-label">Game console</div>
+      </div>
+      <div class="am-item fade-up">
+        <div class="am-icon">🍳</div>
+        <div class="am-label">Full kitchen</div>
+      </div>
+      <div class="am-item fade-up">
+        <div class="am-icon">📶</div>
+        <div class="am-label">Wi-Fi</div>
+      </div>
+      <div class="am-item fade-up">
+        <div class="am-icon">🚗</div>
+        <div class="am-label">Free parking</div>
+      </div>
+      <div class="am-item fade-up">
+        <div class="am-icon">📺</div>
+        <div class="am-label">TV</div>
+      </div>
+      <div class="am-item fade-up">
+        <div class="am-icon">☀️</div>
+        <div class="am-label">Sunroom and yard access</div>
+      </div>
+      <div class="am-item fade-up">
+        <div class="am-icon">👨‍👩‍👧</div>
+        <div class="am-label">Family-friendly indoor entertainment</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEARBY -->
+<section class="section bg-cream">
+  <div class="container">
+    <p class="sec-eyebrow fade-up">Explore</p>
+    <h2 class="sec-heading fade-up">Nearby</h2>
+    <div class="nearby-grid">
+      <a class="nearby-card fade-up" href="https://maps.google.com/?q=Lake+Winnipesaukee+New+Hampshire" target="_blank" rel="noopener noreferrer">
+        <div class="nearby-icon">🌊</div>
+        <div>
+          <span class="nearby-name">Lake Winnipesaukee</span>
+          <span class="nearby-desc">New England's third largest lake — boating, swimming, and stunning views right nearby.</span>
+        </div>
+      </a>
+      <div class="nearby-card fade-up">
+        <div class="nearby-icon">🏖️</div>
+        <div>
+          <span class="nearby-name">Private Community Beach</span>
+          <span class="nearby-desc">Beach access included with your stay — a short walk from the house.</span>
+        </div>
+      </div>
+      <a class="nearby-card fade-up" href="https://maps.google.com/?q=Weirs+Beach+Laconia+NH" target="_blank" rel="noopener noreferrer">
+        <div class="nearby-icon">🏄</div>
+        <div>
+          <span class="nearby-name">Weirs Beach &amp; Boardwalk</span>
+          <span class="nearby-desc">Less than 1 mile away. Seasonal arcades, waterslides, sandy beach, and lakefront dining.</span>
+        </div>
+      </a>
+      <a class="nearby-card fade-up" href="https://maps.google.com/?q=Winnipesaukee+Scenic+Railroad+Weirs+Beach+NH" target="_blank" rel="noopener noreferrer">
+        <div class="nearby-icon">🚂</div>
+        <div>
+          <span class="nearby-name">Winnipesaukee Scenic Railroad</span>
+          <span class="nearby-desc">Historic scenic train rides along the lake, departing from Weirs Station.</span>
+        </div>
+      </a>
+      <a class="nearby-card fade-up" href="https://www.banknhpavilion.com/" target="_blank" rel="noopener noreferrer">
+        <div class="nearby-icon">🎵</div>
+        <div>
+          <span class="nearby-name">Bank of NH Pavilion</span>
+          <span class="nearby-desc">Major outdoor concert and event venue — a great option for summer concert weekends.</span>
+        </div>
+      </a>
+      <a class="nearby-card fade-up" href="https://www.gunstock.com/" target="_blank" rel="noopener noreferrer">
+        <div class="nearby-icon">⛷️</div>
+        <div>
+          <span class="nearby-name">Gunstock Mountain Resort</span>
+          <span class="nearby-desc">Skiing, snowboarding, mountain biking, and outdoor activities year-round.</span>
+        </div>
+      </a>
+      <a class="nearby-card fade-up" href="https://maps.google.com/?q=Bolduc+Park+Laconia+NH" target="_blank" rel="noopener noreferrer">
+        <div class="nearby-icon">🏞️</div>
+        <div>
+          <span class="nearby-name">Bolduc Park</span>
+          <span class="nearby-desc">Local park for recreation, picnics, and outdoor activities.</span>
+        </div>
+      </a>
+      <a class="nearby-card fade-up" href="https://www.tangeroutlet.com/tilton" target="_blank" rel="noopener noreferrer">
+        <div class="nearby-icon">🛍️</div>
+        <div>
+          <span class="nearby-name">Tanger Outlets</span>
+          <span class="nearby-desc">Shopping just minutes away — convenient for a rainy day or a longer stay.</span>
+        </div>
+      </a>
+      <a class="nearby-card fade-up" href="https://www.nhms.com/" target="_blank" rel="noopener noreferrer">
+        <div class="nearby-icon">🏎️</div>
+        <div>
+          <span class="nearby-name">New Hampshire Motor Speedway</span>
+          <span class="nearby-desc">Major motorsport and NASCAR events throughout the season.</span>
+        </div>
+      </a>
+      <a class="nearby-card fade-up" href="https://maps.google.com/?q=Downtown+Meredith+NH" target="_blank" rel="noopener noreferrer">
+        <div class="nearby-icon">🏙️</div>
+        <div>
+          <span class="nearby-name">Meredith Day Trip</span>
+          <span class="nearby-desc">Charming Lakes Region town with waterfront dining, shops, and galleries.</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FROM THE LOCALS -->
+<section class="section bg-white">
+  <div class="container">
+    <p class="sec-eyebrow fade-up">Insider Picks</p>
+    <h2 class="sec-heading fade-up">From the Locals</h2>
+    <p class="sec-sub fade-up">Things worth knowing from people who've spent real time in the Lakes Region.</p>
+    <div class="local-grid">
+      <a class="local-card fade-up" href="https://maps.google.com/?q=Liliuokalani%27s+Ice+Cream+Laconia+NH" target="_blank" rel="noopener noreferrer">
+        <div class="local-emoji">🍦</div>
+        <div>
+          <div class="local-name">Liliuokalani's Ice Cream</div>
+          <div class="local-desc">A local favorite around the Lakes Region. The kind of place regulars don't advertise. Worth stopping in after a day at the beach.</div>
+          <span class="local-tag">Local Pick</span>
+        </div>
+      </a>
+      <a class="local-card fade-up" href="https://maps.google.com/?q=Funspot+Weirs+Beach+Laconia+NH" target="_blank" rel="noopener noreferrer">
+        <div class="local-emoji">🎮</div>
+        <div>
+          <div class="local-name">Funspot</div>
+          <div class="local-desc">The world's largest arcade is right here in Weirs Beach — not an exaggeration. Free to walk in, pay per game. A Lakes Region institution since 1952.</div>
+          <span class="local-tag">Local Pick</span>
+        </div>
+      </a>
+      <a class="local-card fade-up" href="https://maps.google.com/?q=MS+Mount+Washington+Weirs+Beach+NH" target="_blank" rel="noopener noreferrer">
+        <div class="local-emoji">⛵</div>
+        <div>
+          <div class="local-name">M/S Mount Washington</div>
+          <div class="local-desc">Day cruises and dinner sailings on Lake Winnipesaukee. The full lake tour runs about 3 hours — a great way to see the whole lake from the water.</div>
+          <span class="local-tag">Local Pick</span>
+        </div>
+      </a>
+      <div class="local-card fade-up">
+        <div class="local-emoji">🏍️</div>
+        <div>
+          <div class="local-name">Laconia Motorcycle Week — Late June</div>
+          <div class="local-desc">The oldest motorcycle rally in the US. If you're here in late June, Weirs Beach and the Lakes Region turns into something you have to see. Plan for traffic on 3 and 11.</div>
+          <span class="local-tag tip">Seasonal</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GOOD FOR -->
+<section class="section bg-sand">
+  <div class="container">
+    <p class="sec-eyebrow fade-up">Perfect For</p>
+    <h2 class="sec-heading fade-up">Good For</h2>
+    <div class="goodfor-tags fade-up">
+      <span class="tag">Family lake vacations</span>
+      <span class="tag">Summer beach weekends</span>
+      <span class="tag">Concert weekends</span>
+      <span class="tag">Ski weekends</span>
+      <span class="tag">Fall foliage trips</span>
+      <span class="tag">Couples or friends trips</span>
+      <span class="tag">Longer Lakes Region stays</span>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING CTA -->
+<section class="booking-cta">
+  <div class="container">
+    <p class="booking-eyebrow">Reserve Your Stay</p>
+    <h2>Ready to Book?</h2>
+    <p>Interested in a private rental? Contact us directly with your preferred dates, number of guests, and any questions about the property.</p>
+    <div class="cta-buttons">
+      <a href="https://www.airbnb.com/rooms/907383963854624838?guests=1&adults=1&s=67&unique_share_id=c62f3897-bec9-4ceb-b97c-7b4112a9017c"
+         target="_blank" rel="noopener noreferrer" class="btn btn-airbnb btn-lg">View on Airbnb ↗</a>
+      <!-- TODO: Update with your preferred contact details -->
+      <a href="mailto:matt@pickettdynamics.com?subject=Private Rental Inquiry – Laconia, NH"
+         class="btn btn-outline-white btn-lg">Ask About Private Rental</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">Pickett Dynamics</div>
+  <p class="foot-sub">A portfolio of ventures by Pickett Enterprises LLC</p>
+  <ul class="foot-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="HookedOnFishing/index.html">Hooked on Fishing</a></li>
+    <li><a href="rentals.html">Rentals</a></li>
+    <li><a href="mailto:contact@pickettdynamics.com">Contact</a></li>
+  </ul>
+  <p class="foot-copy">&copy; 2026 Pickett Enterprises LLC &nbsp;·&nbsp; Pickett Dynamics &nbsp;·&nbsp; All rights reserved.</p>
+</footer>
+
+<script>
+(function(){
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, {passive: true});
+
+  const ham = document.getElementById('ham');
+  const mob = document.getElementById('mobMenu');
+  ham.addEventListener('click', () => {
+    ham.classList.toggle('open');
+    mob.classList.toggle('open');
+  });
+
+  // Trigger the subtle hero zoom-out once the page is ready
+  requestAnimationFrame(() => {
+    document.getElementById('heroBg').classList.add('loaded');
+  });
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, {threshold: .1, rootMargin: '0px 0px -30px 0px'});
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+})();
+</script>
+</body>
+</html>

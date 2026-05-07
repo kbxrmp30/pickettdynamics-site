@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery — Custom Woodworking & CNC Projects — Pickett Dynamics</title>
+<meta name="description" content="Gallery of custom woodworking and CNC-crafted projects — coffee tables, signs, carvings, epoxy inlays, personalized gifts, and specialty builds.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ww-espresso:#1A110C;--ww-walnut:#2B1A12;--ww-warm:#5A3825;
+  --ww-brass:#B8894A;--ww-brass-dim:rgba(184,137,74,.15);
+  --ww-parchment:#F3E7D3;--ww-cream:#FAF6EF;
+  --ww-charcoal:#24201D;--ww-muted:#8B7355;
+  --ww-muted-lt:rgba(243,231,211,.55);
+  --ww-font:Inter,system-ui,sans-serif;--ww-font-d:'Playfair Display',Georgia,serif;
+  --ww-nav-h:68px;
+  --ww-sh-s:0 2px 10px rgba(43,26,18,.15);--ww-sh-m:0 4px 24px rgba(43,26,18,.22);--ww-sh-l:0 8px 48px rgba(43,26,18,.32);
+  --ww-r-m:10px;--ww-r-l:16px;--ww-r-xl:22px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--ww-font);background:var(--ww-espresso);color:var(--ww-parchment);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}a{text-decoration:none;color:inherit}button{cursor:pointer;font-family:inherit}
+.container{max-width:1100px;margin:0 auto;padding:0 28px}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:900;height:var(--ww-nav-h);
+  background:rgba(26,17,12,.97);backdrop-filter:blur(16px);border-bottom:1px solid rgba(184,137,74,.13)}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 28px;height:100%;
+  display:flex;align-items:center;justify-content:space-between;gap:20px}
+.nav-logo{font-family:var(--ww-font-d);font-size:1.1rem;font-weight:800;color:var(--ww-parchment);
+  display:flex;align-items:center;gap:7px;white-space:nowrap}
+.nav-sep{opacity:.35;font-weight:300;font-family:var(--ww-font)}
+.nav-sub{font-weight:500;font-size:.88rem;font-family:var(--ww-font);color:var(--ww-brass);opacity:.9}
+.nav-links{display:flex;align-items:center;gap:2px;list-style:none}
+.nav-link{color:rgba(243,231,211,.62);font-size:.88rem;font-weight:500;
+  padding:7px 14px;border-radius:6px;transition:color .2s;white-space:nowrap}
+.nav-link:hover{color:var(--ww-parchment)}
+.nav-link.active{color:var(--ww-brass);font-weight:600}
+.ham{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:8px}
+.ham span{display:block;width:22px;height:2px;background:rgba(243,231,211,.7);border-radius:2px;transition:all .3s}
+.ham.open span:nth-child(1){transform:translateY(7px)rotate(45deg)}
+.ham.open span:nth-child(2){opacity:0}
+.ham.open span:nth-child(3){transform:translateY(-7px)rotate(-45deg)}
+.mob-menu{display:none;position:fixed;top:var(--ww-nav-h);left:0;right:0;
+  background:var(--ww-espresso);border-bottom:1px solid rgba(184,137,74,.12);
+  padding:16px 28px 28px;z-index:899;flex-direction:column;gap:4px}
+.mob-menu.open{display:flex}
+.mob-menu .nav-link{color:rgba(243,231,211,.75);font-size:1rem;padding:12px 0;
+  border-radius:0;border-bottom:1px solid rgba(184,137,74,.1)}
+.mob-menu .nav-link.active{color:var(--ww-brass)}
+
+/* BREADCRUMB */
+.breadcrumb{margin-top:var(--ww-nav-h);padding:13px 0;background:var(--ww-walnut);
+  border-bottom:1px solid rgba(184,137,74,.1)}
+.breadcrumb a{font-size:.87rem;font-weight:600;color:rgba(243,231,211,.55);
+  display:inline-flex;align-items:center;gap:5px;transition:color .2s}
+.breadcrumb a:hover{color:var(--ww-brass)}
+
+/* HERO — compact */
+.hero{
+  padding:56px 28px 64px;text-align:center;
+  background:repeating-linear-gradient(92deg,transparent 0,transparent 18px,rgba(90,56,37,.05) 18px,rgba(90,56,37,.05) 19px),
+    radial-gradient(ellipse 130% 90% at 55% 25%,#3D2218 0%,var(--ww-espresso) 65%);
+  border-bottom:1px solid rgba(184,137,74,.1);
+}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;
+  background:rgba(184,137,74,.1);border:1px solid rgba(184,137,74,.28);
+  padding:6px 18px;border-radius:30px;font-size:.77rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ww-brass);margin-bottom:20px}
+.hero h1{font-family:var(--ww-font-d);font-size:clamp(2.2rem,5vw,4rem);
+  font-weight:900;letter-spacing:-.025em;color:var(--ww-parchment);margin-bottom:14px}
+.hero-sub{font-size:1rem;color:var(--ww-muted-lt);max-width:520px;margin:0 auto;line-height:1.7}
+
+/* FILTER BAR */
+.filter-bar{background:var(--ww-cream);border-bottom:1px solid rgba(90,56,37,.12);
+  padding:20px 0;position:sticky;top:var(--ww-nav-h);z-index:800}
+.filter-inner{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 28px;
+  max-width:1100px;margin:0 auto}
+.filter-lbl{font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ww-muted);margin-right:4px;white-space:nowrap}
+.filter-btn{background:rgba(90,56,37,.08);border:1.5px solid rgba(90,56,37,.15);
+  color:var(--ww-warm);font-size:.82rem;font-weight:600;
+  padding:7px 16px;border-radius:30px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.filter-btn:hover{background:rgba(90,56,37,.15);border-color:rgba(90,56,37,.3)}
+.filter-btn.active{background:var(--ww-brass);border-color:var(--ww-brass);color:var(--ww-espresso)}
+
+/* GALLERY GRID */
+.gallery-section{background:var(--ww-cream);padding:56px 0 88px}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.gallery-item{break-inside:avoid}
+
+/* GALLERY CARD */
+.g-card{background:#fff;border-radius:var(--ww-r-l);overflow:hidden;
+  box-shadow:var(--ww-sh-s);transition:transform .3s,box-shadow .3s;height:100%}
+.g-card:hover{transform:translateY(-5px);box-shadow:var(--ww-sh-l)}
+/* GALLERY IMAGE: Replace .g-img div with <img src="path/to/photo.jpg" alt="[description]" style="width:100%;aspect-ratio:4/3;object-fit:cover"> */
+.g-img{aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:8px;position:relative;overflow:hidden}
+.g-img::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,.15));pointer-events:none}
+.pi-coffee{background:linear-gradient(135deg,#4A2A18,#2B1A12)}
+.pi-coffee2{background:linear-gradient(135deg,#3D1E0E,#5A3020)}
+.pi-coffee3{background:linear-gradient(135deg,#2B1A0C,#4A2A18)}
+.pi-sign  {background:linear-gradient(135deg,#3D2A18,#5A3820)}
+.pi-sign2 {background:linear-gradient(135deg,#2A3020,#3D2A18)}
+.pi-cnc   {background:linear-gradient(135deg,#1A2A18,#2B3820)}
+.pi-cnc2  {background:linear-gradient(135deg,#2A3818,#1A2820)}
+.pi-epoxy {background:linear-gradient(135deg,#1A1F30,#2B1A22)}
+.pi-epoxy2{background:linear-gradient(135deg,#18202A,#2B2218)}
+.pi-gift  {background:linear-gradient(135deg,#3A1A22,#2B1A12)}
+.pi-gift2 {background:linear-gradient(135deg,#2B1A2A,#3A1A12)}
+.pi-garage{background:linear-gradient(135deg,#1A1A2A,#2B2018)}
+.pi-spec  {background:linear-gradient(135deg,#2A2018,#3D2A15)}
+.g-img-icon{font-size:2rem;position:relative;z-index:1}
+.g-img-lbl{font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);position:relative;z-index:1;text-align:center;padding:0 12px}
+.g-body{padding:16px 18px 20px}
+.g-cat{display:inline-block;background:rgba(184,137,74,.1);color:var(--ww-brass);
+  font-size:.67rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 10px;border-radius:20px;margin-bottom:8px}
+.g-title{font-family:var(--ww-font-d);font-size:1rem;font-weight:700;
+  color:var(--ww-charcoal);margin-bottom:4px;line-height:1.3}
+.g-material{font-size:.78rem;color:var(--ww-muted);font-style:italic;margin-bottom:6px}
+.g-note{font-size:.82rem;color:var(--ww-warm);line-height:1.55}
+
+/* CTA STRIP */
+.cta-strip{background:var(--ww-espresso);padding:72px 0;text-align:center;
+  border-top:1px solid rgba(184,137,74,.1)}
+.cta-strip h2{font-family:var(--ww-font-d);font-size:clamp(1.7rem,4vw,2.6rem);
+  font-weight:900;color:var(--ww-parchment);margin-bottom:12px}
+.cta-strip p{font-size:.97rem;color:var(--ww-muted-lt);max-width:480px;margin:0 auto 32px;line-height:1.75}
+.cta-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:12px 26px;border-radius:var(--ww-r-m);
+  font-size:.9rem;font-weight:600;border:none;cursor:pointer;transition:background .2s,transform .15s;
+  text-decoration:none;white-space:nowrap}
+.btn:hover{transform:translateY(-2px)}
+.btn-brass{background:var(--ww-brass);color:var(--ww-espresso);box-shadow:0 4px 18px rgba(184,137,74,.35)}
+.btn-brass:hover{background:#c99a55}
+.btn-outline-parchment{background:transparent;color:var(--ww-parchment);border:1.5px solid rgba(243,231,211,.35)}
+.btn-outline-parchment:hover{background:rgba(243,231,211,.08)}
+.btn-lg{padding:14px 32px;font-size:.97rem}
+
+/* FOOTER */
+footer{background:#0f1117;border-top:1px solid rgba(255,255,255,.07);padding:48px 0 32px;text-align:center}
+.foot-logo{font-family:var(--ww-font-d);font-size:1.2rem;font-weight:900;color:#fff;margin-bottom:6px}
+.foot-sub{font-size:.85rem;color:rgba(255,255,255,.32);margin-bottom:22px}
+.foot-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;list-style:none;margin-bottom:28px}
+.foot-links a{font-size:.87rem;color:rgba(255,255,255,.45);transition:color .2s}
+.foot-links a:hover{color:rgba(255,255,255,.85)}
+.foot-copy{font-size:.77rem;color:rgba(255,255,255,.22)}
+
+/* EMPTY STATE */
+.gallery-empty{display:none;text-align:center;padding:64px 0;
+  font-size:1rem;color:var(--ww-muted);grid-column:1/-1}
+
+/* RESPONSIVE */
+@media(max-width:768px){.gallery-grid{grid-template-columns:repeat(2,1fr)}.ham{display:flex}.nav-links{display:none}}
+@media(max-width:520px){.gallery-grid{grid-template-columns:1fr}.filter-inner{gap:6px}}
+@media(max-width:480px){.container{padding:0 20px}.filter-inner{padding:0 20px}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      Pickett Dynamics <span class="nav-sep">/</span> <span class="nav-sub">Woodworking</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="woodworking-gallery.html" class="nav-link active">Gallery</a></li>
+      <li><a href="woodworking-custom-coffee-tables.html" class="nav-link">Coffee Tables</a></li>
+      <li><a href="woodworking-custom-work.html" class="nav-link">Custom Work</a></li>
+      <li><a href="woodworking-sign-designer.html" class="nav-link">Sign Designer</a></li>
+      <li><a href="woodworking-contact.html" class="nav-link">Contact</a></li>
+    </ul>
+    <button class="ham" id="ham" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mob-menu" id="mobMenu">
+  <a href="woodworking-gallery.html" class="nav-link active">Gallery</a>
+  <a href="woodworking-custom-coffee-tables.html" class="nav-link">Coffee Tables</a>
+  <a href="woodworking-custom-work.html" class="nav-link">Custom Work</a>
+  <a href="woodworking-sign-designer.html" class="nav-link">Sign Designer</a>
+  <a href="woodworking-contact.html" class="nav-link">Contact</a>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="container"><a href="woodworking.html">← Back to Woodworking</a></div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🖼️ Portfolio</div>
+  <h1>Project Gallery</h1>
+  <p class="hero-sub">A selection of completed custom woodworking and CNC-crafted pieces. Each project is made to order.</p>
+</section>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <span class="filter-lbl">Filter:</span>
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="coffee-tables">Coffee Tables</button>
+    <button class="filter-btn" data-filter="signs">Signs</button>
+    <button class="filter-btn" data-filter="cnc-carvings">CNC Carvings</button>
+    <button class="filter-btn" data-filter="epoxy-inlay">Epoxy &amp; Inlay</button>
+    <button class="filter-btn" data-filter="gifts">Gifts</button>
+    <button class="filter-btn" data-filter="garage-hobby">Garage &amp; Hobby</button>
+    <button class="filter-btn" data-filter="furniture">Furniture / Specialty</button>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<section class="gallery-section">
+  <div class="container">
+    <div class="gallery-grid" id="galleryGrid">
+
+      <div class="gallery-item" data-category="coffee-tables">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_0587.JPG" alt="Custom walnut coffee table" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">Coffee Tables</span>
+            <h2 class="g-title">Custom Walnut Coffee Table</h2>
+            <p class="g-material">Walnut · hardwood · protective clear finish</p>
+            <p class="g-note">Handcrafted to order. Custom sizing, optional epoxy or metal accents.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="coffee-tables">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_0588.JPG" alt="Hardwood coffee table with X-frame legs" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">Coffee Tables</span>
+            <h2 class="g-title">Hardwood Coffee Table</h2>
+            <p class="g-material">Walnut · X-frame base · protective finish</p>
+            <p class="g-note">Solid hardwood with custom leg style. Clean modern proportions.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="coffee-tables">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_0447.JPG" alt="Natural edge slab coffee table" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">Coffee Tables</span>
+            <h2 class="g-title">Natural Edge Slab Table</h2>
+            <p class="g-material">Hardwood slab · natural edge · clear coat</p>
+            <p class="g-note">Live-edge slab preserved and finished. Sizes and slab species vary.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="coffee-tables">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_0302.JPEG" alt="Four-leg hardwood coffee table" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">Coffee Tables</span>
+            <h2 class="g-title">Four-Leg Hardwood Coffee Table</h2>
+            <p class="g-material">Walnut · solid wood legs · satin finish</p>
+            <p class="g-note">Classic proportions, built to custom dimensions. Leg style options available.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="coffee-tables">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_0797.PNG" alt="Epoxy river coffee table with X-frame legs" style="width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center top">
+          <div class="g-body">
+            <span class="g-cat">Coffee Tables</span>
+            <h2 class="g-title">Epoxy River Coffee Table</h2>
+            <p class="g-material">Walnut slab · epoxy river fill · X-frame legs</p>
+            <p class="g-note">Dramatic epoxy channel with custom color. Statement piece for any living room.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="coffee-tables">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_2356.png" alt="Custom coffee table with decorative accents" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">Coffee Tables</span>
+            <h2 class="g-title">Coffee Table with Decorative Accents</h2>
+            <p class="g-material">Hardwood · decorative details · protective finish</p>
+            <p class="g-note">Custom table with accent details. Modern or rustic aesthetic to order.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="signs">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_0158.png" alt="Personalized family name sign" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">Signs</span>
+            <h2 class="g-title">Family Name Sign</h2>
+            <p class="g-material">Walnut · engraved · stained finish</p>
+            <p class="g-note">Personalized for home, cabin, or lake property. Custom name and year.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="signs">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_2863.JPG" alt="Decorative carved wood sign" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">Signs</span>
+            <h2 class="g-title">Decorative Carved Sign</h2>
+            <p class="g-material">Hardwood panel · multi-tone finish</p>
+            <p class="g-note">Bold carved lettering with decorative detail and wood-toned finish.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="signs">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_3765.JPG" alt="Custom wooden sign with painted lettering" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">Signs</span>
+            <h2 class="g-title">Painted Lettering Sign</h2>
+            <p class="g-material">Hardwood · painted fill · clear coat</p>
+            <p class="g-note">Carved and painted sign for home entry, workshop, or gift. Any name or phrase.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="cnc-carvings">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_0159.png" alt="CNC carved wood panel" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">CNC Carvings</span>
+            <h2 class="g-title">CNC Relief Panel</h2>
+            <p class="g-material">Hardwood panel · natural finish</p>
+            <p class="g-note">CNC-carved decorative panel with layered relief detail. Custom design available.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="cnc-carvings">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_3160.JPG" alt="CNC carving with detailed relief work" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">CNC Carvings</span>
+            <h2 class="g-title">Detailed Relief Carving</h2>
+            <p class="g-material">Hardwood · CNC machined · clear finish</p>
+            <p class="g-note">Precision CNC carving with fine detail. Suitable for wall art or decorative pieces.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="cnc-carvings">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_3161.JPG" alt="CNC carved scene on hardwood" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">CNC Carvings</span>
+            <h2 class="g-title">Scenic CNC Carving</h2>
+            <p class="g-material">Hardwood panel · stained finish</p>
+            <p class="g-note">CNC-carved scene on hardwood. Custom themes available — fishing, hunting, outdoors.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="cnc-carvings">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_3162.JPG" alt="CNC carved decorative panel" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">CNC Carvings</span>
+            <h2 class="g-title">Decorative CNC Panel</h2>
+            <p class="g-material">Hardwood · multi-depth carving</p>
+            <p class="g-note">Custom CNC design with varying depth for a layered, three-dimensional appearance.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="cnc-carvings">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_3390.JPG" alt="CNC carving with painted accents" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">CNC Carvings</span>
+            <h2 class="g-title">CNC Carving with Painted Accents</h2>
+            <p class="g-material">Hardwood · carved · painted fill</p>
+            <p class="g-note">CNC carving with painted detail work to highlight the design. Custom colors available.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="cnc-carvings">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_0058.png" alt="CNC carved logo or crest piece" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">CNC Carvings</span>
+            <h2 class="g-title">CNC Carved Logo Piece</h2>
+            <p class="g-material">Hardwood · precision CNC carving</p>
+            <p class="g-note">Custom logo, crest, or graphic carved in high detail. Personal artwork welcome.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="cnc-carvings">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_763953C8-B6A9-42D4-817A-6876BDAEC3C8.jpeg" alt="CNC carved themed piece" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">CNC Carvings</span>
+            <h2 class="g-title">Themed CNC Carving</h2>
+            <p class="g-material">Hardwood · CNC machined · natural finish</p>
+            <p class="g-note">Themed carving made to order. Bring your own artwork or design concept.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="furniture">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_3356.JPG" alt="Custom hardwood furniture piece" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">Furniture / Specialty</span>
+            <h2 class="g-title">Custom Hardwood Furniture</h2>
+            <p class="g-material">Hardwood · hand-finished</p>
+            <p class="g-note">Custom furniture and specialty builds. Contact us to discuss scope and availability.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="epoxy-inlay">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_0395.JPG" alt="Epoxy inlay wood piece" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">Epoxy &amp; Inlay</span>
+            <h2 class="g-title">Epoxy Inlay Piece</h2>
+            <p class="g-material">Hardwood with epoxy fill</p>
+            <p class="g-note">Custom epoxy color fill inlaid into carved channels. Decorative or functional.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="epoxy-inlay">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_0396.JPG" alt="Epoxy and wood accent piece" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">Epoxy &amp; Inlay</span>
+            <h2 class="g-title">Epoxy Accent Piece</h2>
+            <p class="g-material">Walnut · epoxy accent fill · gloss finish</p>
+            <p class="g-note">Bold epoxy accent with contrasting wood grain. Custom colors and sizing.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="gifts">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_0246.png" alt="Personalized wood gift" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">Gifts</span>
+            <h2 class="g-title">Personalized Wood Gift</h2>
+            <p class="g-material">Hardwood · engraved · custom finish</p>
+            <p class="g-note">Custom name, date, or design. Perfect for weddings, birthdays, and holidays.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="gifts">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_0243.JPG" alt="Custom engraved keepsake piece" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">Gifts</span>
+            <h2 class="g-title">Engraved Keepsake</h2>
+            <p class="g-material">Small-format hardwood · engraved</p>
+            <p class="g-note">Personalized ornaments, pendants, plaques, and keepsake pieces. Custom shape and text.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="gifts">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_2858.JPG" alt="Custom woodworking gift item" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">Gifts</span>
+            <h2 class="g-title">Custom Gift Piece</h2>
+            <p class="g-material">Hardwood · hand-finished</p>
+            <p class="g-note">One-of-a-kind handmade gift. Custom design, text, and finish to order.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-item" data-category="garage-hobby">
+        <article class="g-card">
+          <img src="assets/images/woodworking/IMG_0565.png" alt="Garage or hobby themed sign" style="width:100%;aspect-ratio:4/3;object-fit:cover">
+          <div class="g-body">
+            <span class="g-cat">Garage &amp; Hobby</span>
+            <h2 class="g-title">Garage Sign</h2>
+            <p class="g-material">Painted and carved wood</p>
+            <p class="g-note">Custom automotive, sports, fishing, or hobby sign for the shop or garage.</p>
+          </div>
+        </article>
+      </div>
+
+      <p class="gallery-empty" id="galleryEmpty">No projects in this category yet — check back soon or <a href="woodworking-contact.html" style="color:var(--ww-brass)">contact us</a> to discuss your project.</p>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO: IN THE WORKSHOP -->
+<section style="background:var(--ww-walnut);padding:72px 0;border-top:1px solid rgba(184,137,74,.1);border-bottom:1px solid rgba(184,137,74,.1);text-align:center">
+  <div class="container">
+    <div class="hero-badge" style="margin-bottom:20px">🎬 Behind the Build</div>
+    <h2 style="font-family:var(--ww-font-d);font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:900;color:var(--ww-parchment);margin-bottom:12px">Epoxy Pour</h2>
+    <p style="font-size:.97rem;color:var(--ww-muted-lt);max-width:480px;margin:0 auto 36px;line-height:1.75">A look at epoxy being poured and set into a custom walnut coffee table.</p>
+    <video autoplay muted loop playsinline controls
+      style="max-width:720px;width:100%;border-radius:var(--ww-r-xl);box-shadow:0 8px 48px rgba(0,0,0,.55);display:block;margin:0 auto">
+      <source src="assets/images/woodworking/EPOXY_POUR.mp4" type="video/mp4">
+    </video>
+  </div>
+</section>
+
+<!-- CTA STRIP -->
+<section class="cta-strip">
+  <div class="container">
+    <h2>Want something like this?</h2>
+    <p>Most projects start with a rough idea. Send us the concept and we'll help figure out the rest.</p>
+    <div class="cta-buttons">
+      <a href="woodworking-custom-work.html" class="btn btn-brass btn-lg">Start a Custom Request</a>
+      <a href="woodworking-contact.html" class="btn btn-outline-parchment btn-lg">Contact Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">Pickett Dynamics</div>
+  <p class="foot-sub">A portfolio of ventures by Pickett Enterprises LLC</p>
+  <ul class="foot-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="HookedOnFishing/index.html">Hooked on Fishing</a></li>
+    <li><a href="rentals.html">Rentals</a></li>
+    <li><a href="woodworking.html">Woodworking</a></li>
+    <li><a href="mailto:contact@pickettdynamics.com">Contact</a></li>
+  </ul>
+  <p class="foot-copy">&copy; 2026 Pickett Enterprises LLC &nbsp;·&nbsp; Pickett Dynamics &nbsp;·&nbsp; All rights reserved.</p>
+</footer>
+
+<script>
+(function(){
+  const ham = document.getElementById('ham');
+  const mob = document.getElementById('mobMenu');
+  ham.addEventListener('click', () => { ham.classList.toggle('open'); mob.classList.toggle('open'); });
+
+  // Gallery filter
+  const filterBtns = document.querySelectorAll('[data-filter]');
+  const galleryItems = document.querySelectorAll('.gallery-item');
+  const emptyMsg = document.getElementById('galleryEmpty');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      let visible = 0;
+      galleryItems.forEach(item => {
+        const show = filter === 'all' || item.dataset.category === filter;
+        item.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      emptyMsg.style.display = visible === 0 ? 'block' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -6,10 +6,25 @@ Portfolio site for Pickett Dynamics and its ventures, including the Hooked on Fi
 
 ```
 /
-├── index.html                  # Pickett Dynamics landing page (static)
+├── index.html                        # Pickett Dynamics landing page (static)
 ├── HookedOnFishing/
-│   └── index.html              # Full single-page app (inline CSS + JS)
-├── game.html                   # Hook the Fish canvas game
+│   └── index.html                    # Full single-page app (inline CSS + JS)
+├── game.html                         # Hook the Fish canvas game
+│
+├── rentals.html                      # Rentals overview (two properties)
+├── rentals-laconia-nh.html           # Laconia, NH property detail page
+├── rentals-black-lake-mi.html        # Black Lake, MI property detail page
+│
+├── woodworking.html                  # Woodworking section home
+├── woodworking-gallery.html          # Filterable photo gallery (23 pieces)
+├── woodworking-custom-coffee-tables.html
+├── woodworking-custom-work.html      # Custom project inquiry (mailto form)
+├── woodworking-sign-designer.html    # AI sign design guide + Web3Forms upload
+├── woodworking-contact.html
+│
+└── assets/images/
+    ├── rentals/                      # Rental property photos (JPG)
+    └── woodworking/                  # Project photos (JPG/PNG) + EPOXY_POUR.mp4
 ```
 
 ## Tech Stack
@@ -57,7 +72,28 @@ Portfolio site for Pickett Dynamics and its ventures, including the Hooked on Fi
 - Optimistic UI updates: local cache updated immediately, Firebase write happens async
 - Gallery seed photos are local files (`assets/images/photos/`); admin-uploaded photos are base64 in Firebase
 
+## Web3Forms (Sign Designer)
+
+- **Access Key**: in `woodworking-sign-designer.html` hidden input
+- **Purpose**: Sign design quote requests with image attachment → `matt@pickettdynamics.com`
+- Free tier, no backend needed
+
+## Woodworking Section
+
+- CSS variables use `--ww-` prefix throughout all woodworking pages
+- All woodworking contact emails: `matt@pickettdynamics.com`
+- Nav on all woodworking pages: Gallery · Coffee Tables · Custom Work · Sign Designer · Contact
+- `woodworking-custom-work.html` form uses mailto (builds URL from form fields in JS)
+- `woodworking-sign-designer.html` form uses Web3Forms fetch API with file upload
+
+## Rentals Section
+
+- Two properties: Laconia NH (Airbnb link wired) and Black Lake MI (Airbnb link wired)
+- Contact: `matt@pickettdynamics.com` · Phone: `520-208-3424`
+- Each property page has: hero photo, photo strip, Nearby cards (clickable links), From the Locals section, Good For section
+
 ## Future Work
 
 - Gallery photo uploads via Cloudinary (replace base64-in-database approach)
-- WoodWorking and Rentals ventures (orders, pricing, Stripe payments) — likely Next.js + Supabase when the time comes
+- Woodworking: pricing page, lead time estimates, Stripe deposits
+- Rentals: direct booking form (currently routes to Airbnb or email)

@@ -1,56 +1,84 @@
 # Pickett Enterprises Website
 
-Project folder for the Pickett Enterprises website.
+Portfolio site for Pickett Dynamics and its ventures — hosted at [pickettdynamics.com](https://www.pickettdynamics.com).
 
-## Folder structure
+## Ventures
+
+| Venture | Status | Description |
+|---|---|---|
+| **Hooked on Fishing** | Live | Community fishing program — sessions, RSVPs, leaderboard, gallery |
+| **Rentals** | Live | Two vacation rental properties (Laconia NH, Black Lake MI) |
+| **Woodworking** | Live | Custom woodworking and CNC-crafted pieces, AI Sign Designer |
+
+## Project Structure
 
 ```
-Pickett Enterprises Website/
-├── src/                  Source code for the website
-│   ├── pages/            HTML pages (or framework route files)
-│   ├── styles/           CSS / SCSS stylesheets
-│   ├── scripts/          JavaScript / TypeScript
-│   ├── components/       Reusable UI components
-│   └── assets/           Assets imported by source code (compiled output)
+/
+├── index.html                        # Pickett Dynamics landing page
 │
-├── assets/               Master source files for media (pre-optimization)
-│   ├── images/
-│   │   ├── logos/        Logo files (SVG, PNG, variants)
-│   │   ├── photos/       Photography (originals, high-res)
-│   │   ├── icons/        Icon set
-│   │   └── social/       Social media banners, OG images
-│   ├── fonts/            Font files and licenses
-│   └── videos/           Video assets
+├── HookedOnFishing/
+│   └── index.html                    # Full single-page app
 │
-├── content/              Written content, drafts, and copy
-│   ├── copy/             Page copy drafts (home, about, services, contact)
-│   ├── blog/             Blog post drafts
-│   ├── legal/            Privacy policy, terms, disclaimers
-│   └── emails/           Email templates and marketing copy
+├── rentals.html                      # Rentals overview
+├── rentals-laconia-nh.html           # Laconia, NH property page
+├── rentals-black-lake-mi.html        # Black Lake, MI property page
 │
-├── design/               Design files and visual planning
-│   ├── mockups/          Figma exports, high-fidelity mockups
-│   ├── wireframes/       Low-fidelity layouts and sketches
-│   ├── brand/            Brand guide, color palette, typography
-│   └── inspiration/      Reference sites and moodboard
+├── woodworking.html                  # Woodworking home
+├── woodworking-gallery.html          # Photo gallery (23 pieces, filterable)
+├── woodworking-custom-coffee-tables.html
+├── woodworking-custom-work.html      # Custom project inquiry form
+├── woodworking-sign-designer.html    # AI sign design guide + quote form
+├── woodworking-contact.html
 │
-├── docs/                 Project documentation and planning
-│   ├── planning/         Sitemap, user flows, project plan
-│   ├── seo/              Keyword research, meta descriptions, SEO plan
-│   ├── credentials/      Hosting, domain, CMS logins (keep secure!)
-│   └── meeting-notes/    Notes from client/team meetings
+├── game.html                         # Hook the Fish canvas game
 │
-└── build/                Compiled/production output (typically gitignored)
+└── assets/
+    └── images/
+        ├── rentals/                  # Rental property photos
+        └── woodworking/              # Woodworking project photos + EPOXY_POUR.mp4
 ```
 
-## Getting started
+## Tech Stack
 
-1. Decide on your tech stack (static HTML, WordPress, Next.js, etc.) and add the appropriate project files into `src/`.
-2. Drop master logo and brand files into `assets/images/logos/` and `design/brand/`.
-3. Draft page copy in `content/copy/` before building pages.
-4. Keep `docs/credentials/` out of any public repo — add it to `.gitignore` if you use Git.
+- **Pure HTML/CSS/JS** — no build tools, no frameworks, no package.json
+- **Firebase Realtime Database** — sessions, RSVPs, leaderboard, gallery, videos (HookedOnFishing)
+- **Firebase Authentication** — email/password admin login (HookedOnFishing)
+- **EmailJS** — RSVP notification emails (HookedOnFishing)
+- **Web3Forms** — sign design quote form with file upload (Woodworking)
+- **Google Fonts** — Inter, Playfair Display (CDN)
 
-## Notes
+## Hosting
 
-- `assets/` holds originals; `src/assets/` holds optimized copies used by the site.
-- `build/` is for generated output and can be safely deleted and regenerated.
+- **GitHub Pages** at `https://www.pickettdynamics.com`
+- Repo: `https://github.com/kbxrmp30/pickettdynamics-site`
+- Branch: `main` — deploys automatically on push
+
+## Third-Party Services
+
+### Firebase (hooked-on-fishing-648e6)
+- DB URL: `https://hooked-on-fishing-648e6-default-rtdb.firebaseio.com`
+- Rules: `.read` open; `.write` requires auth except `rsvps` (public write)
+- API key in client HTML is intentional — security enforced via rules
+
+### EmailJS
+- Public Key: `xeNvEhsVhteGUuSUc` · Service: `service_lvfh20a` · Template: `template_fhd5nxm`
+- Sends to `matthew@pickettdynamics.com` on new RSVPs · Free tier: 200/month
+
+### Web3Forms
+- Sign Designer quote form — sends to `matt@pickettdynamics.com` with image attachment
+- Free tier: unlimited submissions
+
+## Admin Access (HookedOnFishing)
+
+Triple-click the 🎣 fish emoji in the nav → login modal → Firebase email/password auth.
+
+Admin can: add/edit sessions, view/copy attendee lists, manage leaderboard, gallery, and videos.
+
+## Conventions
+
+- All styles inline in `<style>` tags — no external CSS files
+- HookedOnFishing CSS vars: `--ink`, `--forest`, `--lake`, `--sand`, `--cream`, `--muted`
+- Woodworking CSS vars: `--ww-espresso`, `--ww-walnut`, `--ww-brass`, `--ww-parchment`, `--ww-cream`
+- Rentals CSS vars: `--primary`, `--accent`, `--sand`, `--cream`
+- Firebase data cached in local JS vars and synced via `onValue` listeners
+- Woodworking contact email: `matt@pickettdynamics.com`
