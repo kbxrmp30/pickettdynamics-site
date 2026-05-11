@@ -9,7 +9,7 @@ Portfolio site for Pickett Dynamics and its ventures, including the Hooked on Fi
 ├── index.html                        # Pickett Dynamics landing page (static)
 ├── HookedOnFishing/
 │   └── index.html                    # Full single-page app (inline CSS + JS)
-├── game.html                         # Hook the Fish canvas game
+├── game.html                         # Hook the Fish canvas game (root + mirrored in HookedOnFishing/)
 │
 ├── rentals.html                      # Rentals overview (two properties)
 ├── rentals-laconia-nh.html           # Laconia, NH property detail page
@@ -24,53 +24,49 @@ Portfolio site for Pickett Dynamics and its ventures, including the Hooked on Fi
 │
 └── assets/images/
     ├── rentals/                      # Rental property photos (JPG)
-    └── woodworking/                  # Project photos (JPG/PNG) + EPOXY_POUR.mp4
+    └── woodworking/                  # Project photos (JPG/PNG)
 ```
 
 ## Tech Stack
 
 - **Pure HTML/CSS/JS** — no build tools, no frameworks, no package.json
-- **Firebase Realtime Database** — shared data across all users (sessions, RSVPs, leaderboard, gallery, videos)
-- **Firebase Authentication** — email/password for admin login
-- **EmailJS** — sends RSVP notification emails to matthew@pickettdynamics.com
+- **localStorage** — all HookedOnFishing data (sessions, RSVPs, leaderboard, gallery, videos) is stored client-side per-browser; data is not shared across users or devices
+- **Web3Forms** — sign design quote form with file upload (Woodworking)
 - **Google Fonts** — Inter, Playfair Display (loaded via CDN)
 
 ## Hosting
 
-- **GitHub Pages** at `https://www.pickettdynamics.com` (custom domain)
-- Repo: `https://github.com/kbxrmp30/pickettdynamics-site`
-- Branch: `main` — deploys automatically on push
+- **Cloudflare Workers** serves the site at `https://www.pickettdynamics.com` — DNS and routing are managed through Cloudflare, not GitHub Pages directly
+- Repo: `https://github.com/kbxrmp30/pickettdynamics-site` — push to `main` triggers deployment
+- DNS registered and managed in Cloudflare; Worker records for `pickettdynamics.com` and `www` point to the `pickettdynamics-site` worker (Proxied)
+- **Always Use HTTPS** is enabled in Cloudflare SSL/TLS → Edge Certificates (redirects all HTTP → HTTPS)
+- The `CNAME` file in the repo contains `www.pickettdynamics.com` (used by the Cloudflare Workers custom domain setup)
+- GitHub Pages "Enforce HTTPS" does not apply — Cloudflare handles TLS termination
 
-## Firebase (hooked-on-fishing-648e6)
-
-- **Database URL**: `https://hooked-on-fishing-648e6-default-rtdb.firebaseio.com`
-- **Auth**: Email/Password — admin users are Matthew and his son
-- **Rules**: `.read` open to all; `.write` requires `auth != null` except `rsvps` which is public write
-- **Data paths**: `sessions/`, `rsvps/`, `leaderboard/`, `gallery/`, `videos/`
-- API key in client HTML is intentional — Firebase security is enforced via rules, not key secrecy
-
-## EmailJS
-
-- **Public Key**: `xeNvEhsVhteGUuSUc`
-- **Service ID**: `service_lvfh20a`
-- **Template ID**: `template_fhd5nxm`
-- Triggered on every new RSVP — sends to `matthew@pickettdynamics.com`
-- Free tier: 200 emails/month
-
-## Admin Access
+## Admin Access (HookedOnFishing)
 
 - Triple-click the 🎣 fish emoji in the nav to open the login modal
-- Authenticates via Firebase email/password
-- Admin can: add/remove sessions, view attendee lists, copy attendee list to clipboard, add leaderboard entries, manage gallery photos and videos
+- Authenticates via hardcoded password (`ADMIN_PW` constant in the script)
+- Admin can: add/remove sessions, view attendee lists, add leaderboard entries, manage gallery photos and videos
+
+## HookedOnFishing Data Model
+
+All data lives in `localStorage` under these keys:
+- `hof_sessions` — object keyed by `YYYY-MM-DD`, each value `{ time, location }`
+- `hof_rsvps` — object keyed by date, each value an array of `{ id, name, email, phone, at }`
+- `hof_my_rsvp` — per-device map of date → RSVP id (tracks this browser's RSVPs)
+- `hof_leaderboard` — array of `{ id, name, size, fishType, photo, addedAt }`
+- `hof_gallery` — array of `{ id, src (base64), cap, addedAt }`
+- `hof_videos` — array of `{ id, ytId, title, desc, addedAt }`
+
+Seed photos are local files in `HookedOnFishing/assets/images/photos/`. Admin-uploaded photos are stored as base64 in localStorage.
 
 ## Conventions
 
 - All styles are inline in `<style>` tags — no external CSS files
-- CSS variables: `--ink`, `--forest`, `--lake`, `--sand`, `--cream`, `--muted` for theming
+- HookedOnFishing CSS variables: `--forest`, `--lake`, `--sand`, `--cream`, `--charcoal`, `--muted`
 - Shadow/radius tokens: `--sh-s/m/l`, `--r-s/m/l/xl`
-- Firebase data is cached in local JS variables (`_sessions`, `_rsvps`, etc.) and kept in sync via `onValue` listeners
-- Optimistic UI updates: local cache updated immediately, Firebase write happens async
-- Gallery seed photos are local files (`assets/images/photos/`); admin-uploaded photos are base64 in Firebase
+- Woodworking CSS variables use `--ww-` prefix throughout all woodworking pages
 
 ## Web3Forms (Sign Designer)
 
@@ -80,7 +76,6 @@ Portfolio site for Pickett Dynamics and its ventures, including the Hooked on Fi
 
 ## Woodworking Section
 
-- CSS variables use `--ww-` prefix throughout all woodworking pages
 - All woodworking contact emails: `matt@pickettdynamics.com`
 - Nav on all woodworking pages: Gallery · Coffee Tables · Custom Work · Sign Designer · Contact
 - `woodworking-custom-work.html` form uses mailto (builds URL from form fields in JS)
@@ -94,6 +89,8 @@ Portfolio site for Pickett Dynamics and its ventures, including the Hooked on Fi
 
 ## Future Work
 
-- Gallery photo uploads via Cloudinary (replace base64-in-database approach)
+- RSVP email notifications to matthew@pickettdynamics.com (EmailJS or similar — not yet implemented)
+- Shared session/RSVP data across devices (Firebase or similar backend — currently localStorage only)
+- Gallery photo uploads via Cloudinary (replace base64-in-localStorage approach)
 - Woodworking: pricing page, lead time estimates, Stripe deposits
 - Rentals: direct booking form (currently routes to Airbnb or email)
